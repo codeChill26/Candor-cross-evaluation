@@ -1358,6 +1358,8 @@ export default async function TeamsLayout({ children }: { children: React.ReactN
 
 - [ ] **Step 2: `createTeam` server action**
 
+> **Adapted during execution:** without an explicit `Promise<...>` return type, TypeScript's inferred return type let `error` widen to `string | undefined` at the call site after `'error' in result` narrowing (observed as a `next build` type-check failure), because the two branches' object-literal shapes weren't kept as a clean discriminated union. Every server action in this plan (`createTeam`, `createInvite`, `acceptInvite`) declares an explicit `{ error: string } | { data: ... }` result type for this reason.
+
 Create `app/teams/actions.ts`:
 
 ```ts
@@ -1368,7 +1370,11 @@ import { createClient } from '@/lib/supabase/server'
 import { createTeamSchema } from '@/lib/validations/team'
 import { generateSlug } from '@/lib/utils/slug'
 
-export async function createTeam(formData: FormData) {
+type CreateTeamResult =
+  | { error: string }
+  | { data: { id: string; name: string; slug: string } }
+
+export async function createTeam(formData: FormData): Promise<CreateTeamResult> {
   const parsed = createTeamSchema.safeParse({ name: formData.get('name') })
   if (!parsed.success) {
     return { error: parsed.error.issues[0].message }
@@ -1400,6 +1406,8 @@ export async function createTeam(formData: FormData) {
 ```
 
 - [ ] **Step 3: Create-team dialog**
+
+> **Adapted during execution:** this shadcn version's Dialog/Trigger primitives are Base UI-based, which uses a `render={<Element/>}` prop to merge a trigger's behavior onto a custom element — there is no Radix-style `asChild` prop. `<DialogTrigger render={<Button>...</Button>} />` replaces the old `<DialogTrigger asChild><Button>...</Button></DialogTrigger>` pattern everywhere in this plan.
 
 Create `components/teams/create-team-dialog.tsx`:
 
@@ -1447,9 +1455,7 @@ export function CreateTeamDialog() {
 
   return (
     <Dialog open={open} onOpenChange={setOpen}>
-      <DialogTrigger asChild>
-        <Button>Tạo team mới</Button>
-      </DialogTrigger>
+      <DialogTrigger render={<Button>Tạo team mới</Button>} />
       <DialogContent>
         <DialogHeader>
           <DialogTitle>Tạo team mới</DialogTitle>
