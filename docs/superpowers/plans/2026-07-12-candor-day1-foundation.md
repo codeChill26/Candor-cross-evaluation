@@ -1578,7 +1578,11 @@ import { createClient } from '@/lib/supabase/server'
 import { inviteMemberSchema } from '@/lib/validations/team'
 import { generateInviteToken, inviteExpiryTimestamp } from '@/lib/utils/invite-token'
 
-export async function createInvite(teamId: string, formData: FormData) {
+type CreateInviteResult =
+  | { error: string }
+  | { data: { token: string; email: string | null } }
+
+export async function createInvite(teamId: string, formData: FormData): Promise<CreateInviteResult> {
   const rawEmail = formData.get('email')
   const parsed = inviteMemberSchema.safeParse({
     email: rawEmail && rawEmail !== '' ? rawEmail : undefined,
@@ -1632,7 +1636,11 @@ import {
   TableRow,
 } from '@/components/ui/table'
 
-type Member = { id: string; role: string; profiles: { full_name: string | null; email: string } }
+export type Member = {
+  id: string
+  role: string
+  profiles: { full_name: string | null; email: string }
+}
 
 export function MembersTable({ members }: { members: Member[] }) {
   return (
@@ -1716,9 +1724,7 @@ export function InviteDialog({ teamId }: { teamId: string }) {
 
   return (
     <Dialog open={open} onOpenChange={handleOpenChange}>
-      <DialogTrigger asChild>
-        <Button variant="outline">Mời thành viên</Button>
-      </DialogTrigger>
+      <DialogTrigger render={<Button variant="outline">Mời thành viên</Button>} />
       <DialogContent>
         <DialogHeader>
           <DialogTitle>Mời thành viên vào team</DialogTitle>
@@ -1760,10 +1766,12 @@ export function InviteDialog({ teamId }: { teamId: string }) {
 
 Create `app/teams/[teamId]/page.tsx`:
 
+> **Adapted during execution:** without generated Supabase `Database` types (not possible yet — no live project/credentials), `supabase-js` can't infer that `team_members.user_id -> profiles.id` is many-to-one, so it types the embedded `profiles` as an array even though the FK guarantees one row per member at runtime. The fetch result is cast through `Member[]` to match the actual runtime shape. Regenerate types with `supabase gen types typescript` once a real project exists and drop this cast.
+
 ```tsx
 import { notFound } from 'next/navigation'
 import { createClient } from '@/lib/supabase/server'
-import { MembersTable } from '@/components/teams/members-table'
+import { MembersTable, type Member } from '@/components/teams/members-table'
 import { InviteDialog } from '@/components/teams/invite-dialog'
 
 export default async function TeamDetailPage({
@@ -1789,7 +1797,7 @@ export default async function TeamDetailPage({
         <h1 className="text-2xl font-semibold">{team.name}</h1>
         <InviteDialog teamId={team.id} />
       </div>
-      <MembersTable members={members ?? []} />
+      <MembersTable members={(members ?? []) as unknown as Member[]} />
     </div>
   )
 }
