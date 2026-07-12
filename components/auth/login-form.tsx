@@ -39,12 +39,23 @@ export function LoginForm() {
       <FieldGroup>
         <Field data-invalid={!!errors.email}>
           <FieldLabel htmlFor="login-email">Email</FieldLabel>
-          <Input id="login-email" type="email" placeholder="ban@congty.com" {...register('email')} />
+          <Input
+            id="login-email"
+            type="email"
+            autoComplete="email"
+            placeholder="ban@congty.com"
+            {...register('email')}
+          />
           <FieldError errors={[errors.email]} />
         </Field>
         <Field data-invalid={!!errors.password}>
           <FieldLabel htmlFor="login-password">Mật khẩu</FieldLabel>
-          <Input id="login-password" type="password" {...register('password')} />
+          <Input
+            id="login-password"
+            type="password"
+            autoComplete="current-password"
+            {...register('password')}
+          />
           <FieldError errors={[errors.password]} />
         </Field>
         {serverError && <p className="text-sm text-destructive">{serverError}</p>}
