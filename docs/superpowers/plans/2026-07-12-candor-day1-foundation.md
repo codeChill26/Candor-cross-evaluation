@@ -459,12 +459,12 @@ import { z } from 'zod'
 
 export const registerSchema = z.object({
   fullName: z.string().min(2, 'Họ tên phải có ít nhất 2 ký tự').max(100),
-  email: z.string().email('Email không hợp lệ'),
+  email: z.email('Email không hợp lệ'),
   password: z.string().min(8, 'Mật khẩu phải có ít nhất 8 ký tự'),
 })
 
 export const loginSchema = z.object({
-  email: z.string().email('Email không hợp lệ'),
+  email: z.email('Email không hợp lệ'),
   password: z.string().min(1, 'Vui lòng nhập mật khẩu'),
 })
 
@@ -484,7 +484,7 @@ export const createTeamSchema = z.object({
 })
 
 export const inviteMemberSchema = z.object({
-  email: z.union([z.string().email('Email không hợp lệ'), z.undefined()]),
+  email: z.union([z.email('Email không hợp lệ'), z.undefined()]),
 })
 
 export type CreateTeamInput = z.infer<typeof createTeamSchema>
@@ -512,13 +512,15 @@ git commit -m "feat: add auth and team validation schemas with tests"
 - Create: `.env.local` (git-ignored, filled with placeholders)
 - Create: `lib/supabase/client.ts`
 - Create: `lib/supabase/server.ts`
-- Create: `lib/supabase/middleware.ts`
+- Create: `lib/supabase/proxy.ts`
 - Create: `lib/supabase/admin.ts`
-- Create: `middleware.ts`
+- Create: `proxy.ts`
 
 **Interfaces:**
 - Consumes: env vars `NEXT_PUBLIC_SUPABASE_URL`, `NEXT_PUBLIC_SUPABASE_ANON_KEY`, `SUPABASE_SERVICE_ROLE_KEY`.
-- Produces: `createClient()` (browser, from `@/lib/supabase/client`), `createClient()` (server/async, from `@/lib/supabase/server`), `createAdminClient()` (from `@/lib/supabase/admin`), `updateSession(request: NextRequest)` (from `@/lib/supabase/middleware`).
+- Produces: `createClient()` (browser, from `@/lib/supabase/client`), `createClient()` (server/async, from `@/lib/supabase/server`), `createAdminClient()` (from `@/lib/supabase/admin`), `updateSession(request: NextRequest)` (from `@/lib/supabase/proxy`).
+
+> **Note:** this project scaffolded on Next.js 16, which renamed the `middleware.ts` file convention to `proxy.ts` (exported function `proxy` instead of `middleware`) — see `node_modules/next/dist/docs/01-app/03-api-reference/03-file-conventions/proxy.md`. The steps below use the new convention.
 
 - [ ] **Step 1: Env templates**
 
@@ -599,9 +601,9 @@ export function createAdminClient() {
 }
 ```
 
-- [ ] **Step 5: Middleware session refresh + route protection**
+- [ ] **Step 5: Proxy session refresh + route protection**
 
-Create `lib/supabase/middleware.ts`:
+Create `lib/supabase/proxy.ts`:
 
 ```ts
 import { createServerClient } from '@supabase/ssr'
@@ -649,13 +651,13 @@ export async function updateSession(request: NextRequest) {
 }
 ```
 
-Create `middleware.ts` at repo root:
+Create `proxy.ts` at repo root:
 
 ```ts
 import { type NextRequest } from 'next/server'
-import { updateSession } from '@/lib/supabase/middleware'
+import { updateSession } from '@/lib/supabase/proxy'
 
-export async function middleware(request: NextRequest) {
+export async function proxy(request: NextRequest) {
   return await updateSession(request)
 }
 
@@ -673,7 +675,7 @@ Expected: build succeeds (Supabase clients are only constructed at request time,
 
 ```bash
 git add -A
-git commit -m "feat: add Supabase client/server/admin/middleware modules"
+git commit -m "feat: add Supabase client/server/admin modules and auth proxy"
 ```
 
 (`.env.local` stays untracked — verify with `git status` that it does not appear before committing.)
