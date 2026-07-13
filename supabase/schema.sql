@@ -310,6 +310,29 @@ create policy "submission_status_select_own"
 -- neither" safe without ever granting a broad client INSERT policy on
 -- `responses`.
 
+-- ---------- responses ----------
+-- This is the enforcement point for "reports only after the round
+-- closes, and only your own" — not just a UI check. A user can only ever
+-- read responses where they are the target, and only once the round is
+-- closed (by status or by deadline). There is still no way to filter by
+-- reviewer — that column doesn't exist — so this policy controls *when*
+-- you see feedback about yourself, not *who* wrote it.
+
+create policy "responses_select_own_when_closed"
+  on public.responses for select
+  to authenticated
+  using (
+    target_id = auth.uid()
+    and exists (
+      select 1 from public.rounds
+      where rounds.id = responses.round_id
+        and (rounds.status = 'closed' or rounds.deadline < now())
+    )
+  );
+
+-- No client-side INSERT policy on responses: see the submit_response()
+-- notes above — all writes go through that function only.
+
 -- ============================================================
 -- 3. Triggers
 -- ============================================================

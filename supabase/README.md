@@ -38,3 +38,13 @@
    ```
 
    Expected: one row, `security_type = 'DEFINER'`.
+
+8. Verify the `responses` SELECT policy exists and is scoped correctly:
+
+   ```sql
+   select policyname, cmd, qual
+   from pg_policies
+   where schemaname = 'public' and tablename = 'responses';
+   ```
+
+   Expected: one row, `cmd = 'SELECT'`, `policyname = 'responses_select_own_when_closed'`.
