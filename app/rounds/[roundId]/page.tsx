@@ -1,3 +1,4 @@
+import Link from 'next/link'
 import { notFound } from 'next/navigation'
 import { createClient } from '@/lib/supabase/server'
 import { getEffectiveStatus } from '@/lib/utils/round-status'
@@ -77,9 +78,9 @@ export default async function RoundDetailPage({ params }: { params: Promise<{ ro
       {effective === 'open' ? (
         <TargetList roundId={roundId} targets={targets} />
       ) : (
-        <p className="text-muted-foreground">
-          Vòng đã đóng. Báo cáo sẽ khả dụng sớm.
-        </p>
+        <Link href={`/rounds/${roundId}/report`} className="text-primary underline underline-offset-4">
+          Xem báo cáo của bạn
+        </Link>
       )}
     </div>
   )
