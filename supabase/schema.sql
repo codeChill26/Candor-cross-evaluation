@@ -114,11 +114,6 @@ alter table public.round_participants enable row level security;
 alter table public.submission_status enable row level security;
 alter table public.responses enable row level security;
 
--- rounds, round_questions, round_participants, submission_status, and
--- responses intentionally have RLS enabled but no policies yet — this
--- denies all access to anon/authenticated roles until Day 2 defines the
--- real rules. service_role (the admin client) always bypasses RLS.
-
 -- ---------- profiles ----------
 
 create policy "profiles_select_self_or_teammate"
@@ -223,6 +218,98 @@ create policy "team_invites_insert_teammate"
 -- marking an invite used both happen server-side via the admin client,
 -- which bypasses RLS. No public SELECT/UPDATE-by-token policy exists.
 
+-- ---------- rounds ----------
+
+create policy "rounds_select_team_member"
+  on public.rounds for select
+  to authenticated
+  using (
+    exists (
+      select 1 from public.team_members
+      where team_members.team_id = rounds.team_id and team_members.user_id = auth.uid()
+    )
+  );
+
+create policy "rounds_insert_team_member"
+  on public.rounds for insert
+  to authenticated
+  with check (
+    created_by = auth.uid()
+    and exists (
+      select 1 from public.team_members
+      where team_members.team_id = rounds.team_id and team_members.user_id = auth.uid()
+    )
+  );
+
+create policy "rounds_update_creator"
+  on public.rounds for update
+  to authenticated
+  using (created_by = auth.uid());
+
+-- ---------- round_questions ----------
+
+create policy "round_questions_select_team_member"
+  on public.round_questions for select
+  to authenticated
+  using (
+    exists (
+      select 1 from public.rounds
+      join public.team_members on team_members.team_id = rounds.team_id
+      where rounds.id = round_questions.round_id and team_members.user_id = auth.uid()
+    )
+  );
+
+create policy "round_questions_insert_round_creator"
+  on public.round_questions for insert
+  to authenticated
+  with check (
+    exists (
+      select 1 from public.rounds
+      where rounds.id = round_questions.round_id and rounds.created_by = auth.uid()
+    )
+  );
+
+-- ---------- round_participants ----------
+
+create policy "round_participants_select_team_member"
+  on public.round_participants for select
+  to authenticated
+  using (
+    exists (
+      select 1 from public.rounds
+      join public.team_members on team_members.team_id = rounds.team_id
+      where rounds.id = round_participants.round_id and team_members.user_id = auth.uid()
+    )
+  );
+
+create policy "round_participants_insert_round_creator"
+  on public.round_participants for insert
+  to authenticated
+  with check (
+    exists (
+      select 1 from public.rounds
+      where rounds.id = round_participants.round_id and rounds.created_by = auth.uid()
+    )
+  );
+
+-- ---------- submission_status ----------
+-- A user may only ever see their OWN reviewer rows — never who else has
+-- submitted. Team-wide submission counts are computed server-side with
+-- the admin client (see getRoundProgress), which bypasses RLS and returns
+-- only a count, never these rows, to the client.
+
+create policy "submission_status_select_own"
+  on public.submission_status for select
+  to authenticated
+  using (reviewer_id = auth.uid());
+
+-- No client-side INSERT policy on submission_status or responses: both
+-- are written together, atomically, only through submit_response()
+-- below, which runs as SECURITY DEFINER and enforces every business rule
+-- itself. This is what keeps "insert into two unlinkable tables, both-or-
+-- neither" safe without ever granting a broad client INSERT policy on
+-- `responses`.
+
 -- ============================================================
 -- 3. Triggers
 -- ============================================================
@@ -266,3 +353,78 @@ $$;
 create trigger on_team_created
   after insert on public.teams
   for each row execute procedure public.handle_new_team();
+
+-- ============================================================
+-- 4. Submission RPC
+-- ============================================================
+
+-- Atomically records a review: one row in submission_status (progress
+-- tracking, linked to the reviewer) and one row in responses (content,
+-- NEVER linked to the reviewer). Both inserts succeed or neither does.
+-- All business rules are enforced here so a client can't bypass them by
+-- calling the tables directly (which it can't anyway — see the RLS notes
+-- above — but this is the single source of truth for the rules).
+create function public.submit_response(
+  p_round_id uuid,
+  p_target_id uuid,
+  p_answers_json jsonb
+)
+returns void
+language plpgsql
+security definer set search_path = public
+as $$
+declare
+  v_reviewer_id uuid := auth.uid();
+  v_status text;
+  v_deadline timestamptz;
+begin
+  if v_reviewer_id is null then
+    raise exception 'not authenticated';
+  end if;
+
+  if v_reviewer_id = p_target_id then
+    raise exception 'cannot review yourself';
+  end if;
+
+  select status, deadline into v_status, v_deadline
+  from public.rounds
+  where id = p_round_id;
+
+  if v_status is null then
+    raise exception 'round not found';
+  end if;
+
+  if v_status = 'closed' or v_deadline < now() then
+    raise exception 'round is closed';
+  end if;
+
+  if not exists (
+    select 1 from public.round_participants
+    where round_id = p_round_id and user_id = v_reviewer_id
+  ) then
+    raise exception 'not a participant in this round';
+  end if;
+
+  if not exists (
+    select 1 from public.round_participants
+    where round_id = p_round_id and user_id = p_target_id
+  ) then
+    raise exception 'target is not a participant in this round';
+  end if;
+
+  if exists (
+    select 1 from public.submission_status
+    where round_id = p_round_id and reviewer_id = v_reviewer_id and target_id = p_target_id
+  ) then
+    raise exception 'already submitted a review for this target';
+  end if;
+
+  insert into public.responses (round_id, target_id, answers_json)
+  values (p_round_id, p_target_id, p_answers_json);
+
+  insert into public.submission_status (round_id, reviewer_id, target_id)
+  values (p_round_id, v_reviewer_id, p_target_id);
+end;
+$$;
+
+grant execute on function public.submit_response(uuid, uuid, jsonb) to authenticated;

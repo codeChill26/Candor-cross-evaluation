@@ -27,3 +27,14 @@
 
    Expected columns: `id, round_id, target_id, answers_json, submitted_at` —
    no `reviewer_id` and no other column that could identify the reviewer.
+
+7. Verify the `submit_response` function exists and is callable by
+   `authenticated`:
+
+   ```sql
+   select routine_name, security_type
+   from information_schema.routines
+   where routine_schema = 'public' and routine_name = 'submit_response';
+   ```
+
+   Expected: one row, `security_type = 'DEFINER'`.
