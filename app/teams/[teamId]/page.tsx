@@ -1,7 +1,9 @@
+import Link from 'next/link'
 import { notFound } from 'next/navigation'
 import { createClient } from '@/lib/supabase/server'
 import { MembersTable, type Member } from '@/components/teams/members-table'
 import { InviteDialog } from '@/components/teams/invite-dialog'
+import { Button } from '@/components/ui/button'
 
 export default async function TeamDetailPage({
   params,
@@ -24,7 +26,12 @@ export default async function TeamDetailPage({
     <div className="space-y-6">
       <div className="flex items-center justify-between">
         <h1 className="text-2xl font-semibold">{team.name}</h1>
-        <InviteDialog teamId={team.id} />
+        <div className="flex gap-2">
+          <Link href={`/teams/${team.id}/rounds`}>
+            <Button variant="outline">Vòng đánh giá</Button>
+          </Link>
+          <InviteDialog teamId={team.id} />
+        </div>
       </div>
       {/* Cast: without generated Database types, supabase-js can't infer that
           team_members.user_id -> profiles.id is many-to-one, so it types the
