@@ -79,9 +79,14 @@ export async function createBulkInvites(
     return { error: 'Không xác thực được người dùng' }
   }
 
+  // Normalize once, up front, so every downstream comparison (member lookup,
+  // pending-invite lookup, insert) operates on the same trimmed/lowercased
+  // form. This matches the convention in lib/utils/parse-email-list.ts.
+  const normalizedEmails = emails.map((email) => email.trim().toLowerCase())
+
   const invalidFormat: string[] = []
   const validEmails: string[] = []
-  for (const email of emails) {
+  for (const email of normalizedEmails) {
     if (z.email().safeParse(email).success) {
       validEmails.push(email)
     } else {
@@ -104,22 +109,28 @@ export async function createBulkInvites(
   }
   const memberEmails = new Set(
     ((members ?? []) as unknown as { profiles: { email: string } }[]).map((m) =>
-      m.profiles.email.toLowerCase()
+      m.profiles.email.trim().toLowerCase()
     )
   )
 
+  // Note: no `.in('email', validEmails)` filter here. team_invites.email is
+  // plain text and prior invites (e.g. from the single-invite path, which is
+  // not normalized) may be stored with arbitrary casing. Postgres `.in()` is
+  // a case-sensitive equality check, so filtering by our now-lowercased
+  // validEmails could silently miss a differently-cased existing row. Fetch
+  // all of the team's invites instead and compare after normalizing, the
+  // same way memberEmails is derived above.
   const { data: existingInvites, error: invitesError } = await supabase
     .from('team_invites')
     .select('email, expires_at, used_at')
     .eq('team_id', teamId)
-    .in('email', validEmails)
   if (invitesError) {
     return { error: invitesError.message }
   }
   const pendingInviteEmails = new Set(
     (existingInvites ?? [])
       .filter((invite) => invite.email && !invite.used_at && !isInviteExpired(invite.expires_at))
-      .map((invite) => (invite.email as string).toLowerCase())
+      .map((invite) => (invite.email as string).trim().toLowerCase())
   )
 
   const { alreadyMember, alreadyInvited, toInvite } = classifyEmails(
