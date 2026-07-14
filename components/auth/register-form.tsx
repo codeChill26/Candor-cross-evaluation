@@ -8,7 +8,8 @@ import { registerSchema, type RegisterInput } from '@/lib/validations/auth'
 import { createClient } from '@/lib/supabase/client'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
-import { Field, FieldGroup, FieldLabel, FieldError } from '@/components/ui/field'
+import { Field, FieldGroup, FieldLabel, FieldError, FieldSeparator } from '@/components/ui/field'
+import { GoogleSignInButton } from '@/components/auth/google-sign-in-button'
 
 export function RegisterForm() {
   const router = useRouter()
@@ -85,6 +86,8 @@ export function RegisterForm() {
         <Button type="submit" className="w-full" disabled={isSubmitting}>
           Tạo tài khoản
         </Button>
+        <FieldSeparator>hoặc</FieldSeparator>
+        <GoogleSignInButton onError={setServerError} />
       </FieldGroup>
     </form>
   )
