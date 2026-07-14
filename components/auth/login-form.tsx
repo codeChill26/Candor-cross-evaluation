@@ -27,7 +27,11 @@ export function LoginForm() {
     const supabase = createClient()
     const { error } = await supabase.auth.signInWithPassword(values)
     if (error) {
-      setServerError('Email hoặc mật khẩu không đúng')
+      if (error.message.toLowerCase().includes('email not confirmed')) {
+        setServerError('Email chưa được xác nhận. Kiểm tra hộp thư để kích hoạt tài khoản.')
+      } else {
+        setServerError(error.message || 'Email hoặc mật khẩu không đúng')
+      }
       return
     }
     router.push('/teams')
