@@ -8,7 +8,8 @@ import { loginSchema, type LoginInput } from '@/lib/validations/auth'
 import { createClient } from '@/lib/supabase/client'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
-import { Field, FieldGroup, FieldLabel, FieldError } from '@/components/ui/field'
+import { Field, FieldGroup, FieldLabel, FieldError, FieldSeparator } from '@/components/ui/field'
+import { GoogleSignInButton } from '@/components/auth/google-sign-in-button'
 
 export function LoginForm() {
   const router = useRouter()
@@ -66,6 +67,8 @@ export function LoginForm() {
         <Button type="submit" className="w-full" disabled={isSubmitting}>
           Đăng nhập
         </Button>
+        <FieldSeparator>hoặc</FieldSeparator>
+        <GoogleSignInButton onError={setServerError} />
       </FieldGroup>
     </form>
   )
