@@ -2,7 +2,7 @@
 
 import { useState } from 'react'
 import { useRouter } from 'next/navigation'
-import { GoogleAuthProvider, signInWithPopup } from 'firebase/auth'
+import { GoogleAuthProvider, signInWithPopup, signOut } from 'firebase/auth'
 import { auth } from '@/lib/firebase/client'
 import { getGoogleSignInErrorMessage } from '@/lib/firebase/google-error'
 import { createClient } from '@/lib/supabase/client'
@@ -40,6 +40,7 @@ export function GoogleSignInButton({ onError }: GoogleSignInButtonProps) {
   const [isSubmitting, setIsSubmitting] = useState(false)
 
   async function handleClick() {
+    onError('')
     setIsSubmitting(true)
     try {
       const result = await signInWithPopup(auth, new GoogleAuthProvider())
@@ -48,6 +49,10 @@ export function GoogleSignInButton({ onError }: GoogleSignInButtonProps) {
         onError('Không lấy được token từ Google.')
         return
       }
+
+      // Identity lives in Supabase; drop the local Firebase session so it
+      // never lingers as a second source of truth.
+      signOut(auth).catch(() => {})
 
       const supabase = createClient()
       const { error } = await supabase.auth.signInWithIdToken({
