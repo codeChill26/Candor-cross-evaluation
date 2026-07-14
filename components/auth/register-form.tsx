@@ -25,17 +25,26 @@ export function RegisterForm() {
   async function onSubmit(values: RegisterInput) {
     setServerError(null)
     const supabase = createClient()
-    const { error } = await supabase.auth.signUp({
+    const { data, error } = await supabase.auth.signUp({
       email: values.email,
       password: values.password,
-      options: { data: { full_name: values.fullName } },
+      options: {
+        data: { full_name: values.fullName },
+        emailRedirectTo: `${window.location.origin}/auth/callback?next=/teams`,
+      },
     })
     if (error) {
       setServerError(error.message)
       return
     }
-    router.push('/teams')
-    router.refresh()
+
+    if (data.session) {
+      router.push('/teams')
+      router.refresh()
+      return
+    }
+
+    setServerError('Đã gửi email xác nhận. Hãy mở email và bấm link để kích hoạt tài khoản.')
   }
 
   return (
