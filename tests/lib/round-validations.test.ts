@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest'
-import { createRoundSchema, buildAnswersSchema } from '@/lib/validations/round'
+import { createRoundSchema, buildAnswersSchema, displayNameSchema, createOpenRoundSchema } from '@/lib/validations/round'
 
 describe('createRoundSchema', () => {
   const future = new Date(Date.now() + 7 * 24 * 60 * 60 * 1000).toISOString()
@@ -77,5 +77,42 @@ describe('buildAnswersSchema', () => {
   it('rejects an empty text answer', () => {
     const schema = buildAnswersSchema(questions)
     expect(schema.safeParse({ q1: 3, q2: 'Có', q3: '' }).success).toBe(false)
+  })
+})
+
+describe('displayNameSchema', () => {
+  it('accepts a normal name', () => {
+    expect(displayNameSchema.safeParse('Nguyễn Văn A').success).toBe(true)
+  })
+
+  it('rejects an empty string', () => {
+    expect(displayNameSchema.safeParse('').success).toBe(false)
+  })
+
+  it('rejects a name over 50 characters', () => {
+    expect(displayNameSchema.safeParse('a'.repeat(51)).success).toBe(false)
+  })
+})
+
+describe('createOpenRoundSchema', () => {
+  const future = new Date(Date.now() + 7 * 24 * 60 * 60 * 1000).toISOString()
+
+  it('accepts round fields plus a display name', () => {
+    const result = createOpenRoundSchema.safeParse({
+      displayName: 'Nguyễn Văn A',
+      title: 'Đánh giá dự án nhóm',
+      deadline: future,
+      questions: [{ type: 'text', prompt: 'Góp ý?' }],
+    })
+    expect(result.success).toBe(true)
+  })
+
+  it('rejects a missing display name', () => {
+    const result = createOpenRoundSchema.safeParse({
+      title: 'Đánh giá dự án nhóm',
+      deadline: future,
+      questions: [{ type: 'text', prompt: 'Góp ý?' }],
+    })
+    expect(result.success).toBe(false)
   })
 })

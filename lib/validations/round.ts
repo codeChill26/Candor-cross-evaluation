@@ -33,6 +33,18 @@ export const createRoundSchema = z.object({
 export type RoundQuestionInput = z.infer<typeof roundQuestionSchema>
 export type CreateRoundInput = z.infer<typeof createRoundSchema>
 
+export const displayNameSchema = z
+  .string()
+  .trim()
+  .min(1, 'Nhập tên hiển thị')
+  .max(50, 'Tối đa 50 ký tự')
+
+export const createOpenRoundSchema = createRoundSchema.extend({
+  displayName: displayNameSchema,
+})
+
+export type CreateOpenRoundInput = z.infer<typeof createOpenRoundSchema>
+
 type AnswerQuestion = {
   id: string
   type: 'rating' | 'multiple_choice' | 'text'
