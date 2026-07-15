@@ -30,7 +30,7 @@ export default async function TeamDetailPage({
           <Link href={`/teams/${team.id}/rounds`}>
             <Button variant="outline">Vòng đánh giá</Button>
           </Link>
-          <InviteDialog teamId={team.id} />
+          <InviteDialog teamId={team.id} teamName={team.name} />
         </div>
       </div>
       {/* Cast: without generated Database types, supabase-js can't infer that

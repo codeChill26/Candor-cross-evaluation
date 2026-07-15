@@ -13,9 +13,11 @@ import {
   DialogTrigger,
 } from '@/components/ui/dialog'
 import { createInvite } from '@/app/teams/[teamId]/actions'
+import { BulkInviteForm } from '@/components/teams/bulk-invite-form'
 
-export function InviteDialog({ teamId }: { teamId: string }) {
+export function InviteDialog({ teamId, teamName }: { teamId: string; teamName: string }) {
   const [open, setOpen] = useState(false)
+  const [mode, setMode] = useState<'link' | 'email'>('link')
   const [email, setEmail] = useState('')
   const [error, setError] = useState<string | null>(null)
   const [pending, setPending] = useState(false)
@@ -39,6 +41,7 @@ export function InviteDialog({ teamId }: { teamId: string }) {
   function handleOpenChange(next: boolean) {
     setOpen(next)
     if (!next) {
+      setMode('link')
       setEmail('')
       setError(null)
       setInviteUrl(null)
@@ -52,7 +55,27 @@ export function InviteDialog({ teamId }: { teamId: string }) {
         <DialogHeader>
           <DialogTitle>Mời thành viên vào team</DialogTitle>
         </DialogHeader>
-        {inviteUrl ? (
+        <div className="flex gap-1.5">
+          <Button
+            type="button"
+            size="sm"
+            variant={mode === 'link' ? 'secondary' : 'ghost'}
+            onClick={() => setMode('link')}
+          >
+            Link mời
+          </Button>
+          <Button
+            type="button"
+            size="sm"
+            variant={mode === 'email' ? 'secondary' : 'ghost'}
+            onClick={() => setMode('email')}
+          >
+            Mời qua email
+          </Button>
+        </div>
+        {mode === 'email' ? (
+          <BulkInviteForm teamId={teamId} teamName={teamName} />
+        ) : inviteUrl ? (
           <div className="space-y-3">
             <p className="text-sm text-muted-foreground">
               Link mời (hết hạn sau 7 ngày) — gửi cho người bạn muốn mời:
