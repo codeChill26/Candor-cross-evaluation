@@ -1,10 +1,12 @@
 import Link from 'next/link'
+import { headers } from 'next/headers'
 import { notFound } from 'next/navigation'
 import { createClient } from '@/lib/supabase/server'
 import { getEffectiveStatus } from '@/lib/utils/round-status'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import { TargetList } from '@/components/rounds/target-list'
+import { CollectingPanel } from '@/components/rounds/collecting-panel'
 import { closeRound } from './actions'
 
 export default async function RoundDetailPage({ params }: { params: Promise<{ roundId: string }> }) {
@@ -27,6 +29,35 @@ export default async function RoundDetailPage({ params }: { params: Promise<{ ro
     .select('user_id, profiles(full_name, email)')
     .eq('round_id', roundId)
 
+  const isCreator = round.created_by === user?.id
+
+  // Cast: without generated Database types, the embedded `profiles` is
+  // typed as an array even though round_participants.user_id -> profiles.id
+  // is many-to-one at runtime (same reasoning as the team members page).
+  const typedParticipants = (participants ?? []) as unknown as {
+    user_id: string
+    profiles: { full_name: string | null; email: string | null }
+  }[]
+
+  if (round.status === 'collecting') {
+    const headersList = await headers()
+    const host = headersList.get('host') ?? 'localhost:3000'
+    const protocol = headersList.get('x-forwarded-proto') ?? (host.startsWith('localhost') ? 'http' : 'https')
+    const joinUrl = `${protocol}://${host}/rounds/${roundId}/join`
+
+    const names = typedParticipants.map((p) => p.profiles.full_name ?? p.profiles.email ?? 'Ẩn danh')
+
+    return (
+      <CollectingPanel
+        roundId={roundId}
+        title={round.title}
+        participantNames={names}
+        isCreator={isCreator}
+        joinUrl={joinUrl}
+      />
+    )
+  }
+
   const { data: mySubmissions } = await supabase
     .from('submission_status')
     .select('target_id')
@@ -35,13 +66,7 @@ export default async function RoundDetailPage({ params }: { params: Promise<{ ro
 
   const reviewedTargetIds = new Set((mySubmissions ?? []).map((s) => s.target_id))
 
-  // Cast: without generated Database types, the embedded `profiles` is
-  // typed as an array even though round_participants.user_id -> profiles.id
-  // is many-to-one at runtime (same reasoning as the team members page).
-  const targets = ((participants ?? []) as unknown as {
-    user_id: string
-    profiles: { full_name: string | null; email: string }
-  }[])
+  const targets = typedParticipants
     .filter((p) => p.user_id !== user?.id)
     .map((p) => ({
       userId: p.user_id,
@@ -51,7 +76,6 @@ export default async function RoundDetailPage({ params }: { params: Promise<{ ro
     }))
 
   const effective = getEffectiveStatus(round.status, round.deadline)
-  const isCreator = round.created_by === user?.id
 
   return (
     <div className="space-y-6">
