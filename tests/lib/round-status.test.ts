@@ -20,4 +20,8 @@ describe('getEffectiveStatus', () => {
   it('returns "draft" for a draft round regardless of deadline', () => {
     expect(getEffectiveStatus('draft', past)).toBe('draft')
   })
+
+  it('returns "collecting" regardless of deadline', () => {
+    expect(getEffectiveStatus('collecting', past)).toBe('collecting')
+  })
 })
