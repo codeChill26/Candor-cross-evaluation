@@ -451,3 +451,103 @@ end;
 $$;
 
 grant execute on function public.submit_response(uuid, uuid, jsonb) to authenticated;
+
+-- ============================================================
+-- 5. Open (guest) evaluation rounds
+-- ============================================================
+-- Guests are real Supabase Auth users created via signInAnonymously() —
+-- invisible to them, but a real auth.uid() — so every rule below is
+-- additive to the existing policies, never a replacement. team_id is
+-- null means "open round" everywhere (same convention as
+-- team_invites.email null = open invite link).
+
+alter table public.rounds
+  alter column team_id drop not null;
+
+alter table public.rounds
+  drop constraint rounds_status_check,
+  add constraint rounds_status_check
+    check (status in ('draft', 'collecting', 'open', 'closed'));
+
+alter table public.profiles
+  alter column email drop not null;
+
+-- A guest can see an open round once they've joined it as a participant.
+create policy "rounds_select_open_participant"
+  on public.rounds for select
+  to authenticated
+  using (
+    team_id is null
+    and exists (
+      select 1 from public.round_participants
+      where round_participants.round_id = rounds.id
+        and round_participants.user_id = auth.uid()
+    )
+  );
+
+-- Anyone authenticated (incl. anonymous) can create an open round for themselves.
+create policy "rounds_insert_open"
+  on public.rounds for insert
+  to authenticated
+  with check (created_by = auth.uid() and team_id is null);
+
+-- Self-service join: insert your own row while the round is still collecting.
+create policy "round_participants_insert_self_when_collecting"
+  on public.round_participants for insert
+  to authenticated
+  with check (
+    user_id = auth.uid()
+    and exists (
+      select 1 from public.rounds
+      where rounds.id = round_participants.round_id
+        and rounds.team_id is null
+        and rounds.status = 'collecting'
+    )
+  );
+
+-- Open-round participants can see the rest of the roster (needed to build
+-- their own reviewer/target list, same purpose as the team-mode policy).
+create policy "round_participants_select_open_participant"
+  on public.round_participants for select
+  to authenticated
+  using (
+    exists (
+      select 1 from public.rounds
+      where rounds.id = round_participants.round_id and rounds.team_id is null
+    )
+    and exists (
+      select 1 from public.round_participants rp2
+      where rp2.round_id = round_participants.round_id and rp2.user_id = auth.uid()
+    )
+  );
+
+-- Open-round participants can see the question set once they're in the roster.
+create policy "round_questions_select_open_participant"
+  on public.round_questions for select
+  to authenticated
+  using (
+    exists (
+      select 1 from public.rounds
+      join public.round_participants on round_participants.round_id = rounds.id
+      where rounds.id = round_questions.round_id
+        and rounds.team_id is null
+        and round_participants.user_id = auth.uid()
+    )
+  );
+
+-- Fellow open-round participants can resolve each other's display names
+-- (team-mode equivalent is profiles_select_self_or_teammate, which requires
+-- a shared team_members row — guests have none).
+create policy "profiles_select_open_round_co_participant"
+  on public.profiles for select
+  to authenticated
+  using (
+    exists (
+      select 1 from public.round_participants rp1
+      join public.round_participants rp2 on rp1.round_id = rp2.round_id
+      join public.rounds on rounds.id = rp1.round_id
+      where rp1.user_id = auth.uid()
+        and rp2.user_id = profiles.id
+        and rounds.team_id is null
+    )
+  );
