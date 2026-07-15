@@ -3,6 +3,10 @@ import { NextResponse, type NextRequest } from 'next/server'
 
 const PUBLIC_PATH_PREFIXES = ['/login', '/register', '/auth', '/join']
 
+function isPublicOpenRoundPath(pathname: string): boolean {
+  return pathname === '/rounds/new' || /^\/rounds\/[^/]+\/join$/.test(pathname)
+}
+
 export async function updateSession(request: NextRequest) {
   let supabaseResponse = NextResponse.next({ request })
 
@@ -30,7 +34,10 @@ export async function updateSession(request: NextRequest) {
   } = await supabase.auth.getUser()
 
   const { pathname } = request.nextUrl
-  const isPublicPath = pathname === '/' || PUBLIC_PATH_PREFIXES.some((p) => pathname.startsWith(p))
+  const isPublicPath =
+    pathname === '/' ||
+    PUBLIC_PATH_PREFIXES.some((p) => pathname.startsWith(p)) ||
+    isPublicOpenRoundPath(pathname)
 
   if (!user && !isPublicPath) {
     const url = request.nextUrl.clone()
