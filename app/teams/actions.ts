@@ -22,6 +22,9 @@ export async function createTeam(formData: FormData): Promise<CreateTeamResult> 
   if (!user) {
     return { error: 'Không xác thực được người dùng' }
   }
+  if (user.is_anonymous) {
+    return { error: 'Vui lòng tạo tài khoản trước khi tạo team' }
+  }
 
   const slug = generateSlug(parsed.data.name)
 

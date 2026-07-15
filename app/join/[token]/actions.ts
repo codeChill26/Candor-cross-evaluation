@@ -14,6 +14,9 @@ export async function acceptInvite(token: string): Promise<AcceptInviteResult> {
   if (!user) {
     return { error: 'Bạn cần đăng nhập trước' }
   }
+  if (user.is_anonymous) {
+    return { error: 'Vui lòng tạo tài khoản trước khi tham gia team' }
+  }
 
   const admin = createAdminClient()
 

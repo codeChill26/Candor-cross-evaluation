@@ -551,3 +551,25 @@ create policy "profiles_select_open_round_co_participant"
         and rounds.team_id is null
     )
   );
+
+-- ============================================================
+-- 6. Keep anonymous (guest) sessions out of the registered tier
+-- ============================================================
+-- Anonymous auth users are real `authenticated`-role sessions, so every
+-- existing team-mode policy that just checks auth.uid() would otherwise
+-- let a guest session create/join a real team via a direct API call,
+-- bypassing the app entirely. team_members has no client INSERT policy
+-- at all (see the comment below the team_members policies) — joining a
+-- team only ever happens through acceptInvite()'s service-role client,
+-- which now checks user.is_anonymous in code. This policy closes the
+-- other entry point: creating a team directly.
+
+drop policy "teams_insert_self_as_creator" on public.teams;
+
+create policy "teams_insert_self_as_creator"
+  on public.teams for insert
+  to authenticated
+  with check (
+    auth.uid() = created_by
+    and (select (auth.jwt()->>'is_anonymous')::boolean) is false
+  );
