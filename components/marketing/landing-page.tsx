@@ -48,6 +48,11 @@ export function LandingPage() {
                 Đăng nhập
               </Button>
             </Link>
+            <Link href="/rounds/new">
+              <Button size="lg" variant="ghost">
+                Tạo đánh giá nhanh — không cần tài khoản
+              </Button>
+            </Link>
           </div>
         </div>
         <div className="flex justify-center md:justify-end">
