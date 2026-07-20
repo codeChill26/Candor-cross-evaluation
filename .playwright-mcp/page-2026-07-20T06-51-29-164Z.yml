@@ -1,0 +1,50 @@
+- generic [active] [ref=e1]:
+  - generic [ref=e3]:
+    - banner [ref=e4]:
+      - generic [ref=e10]:
+        - paragraph [ref=e11]: Candor access
+        - heading "Đăng nhập workspace" [level=1] [ref=e12]
+        - paragraph [ref=e13]: Truy cập tài khoản để quản lý team và các vòng đánh giá.
+      - generic [ref=e14]:
+        - button "Trở lại" [ref=e15]
+        - link "Trang chủ" [ref=e16] [cursor=pointer]:
+          - /url: /
+    - main [ref=e17]:
+      - generic [ref=e20]:
+        - generic [ref=e21]: Đăng nhập vào Candor
+        - generic [ref=e23]:
+          - generic [ref=e25]:
+            - group [ref=e26]:
+              - generic [ref=e27]: Email
+              - textbox "Email" [ref=e28]:
+                - /placeholder: ban@congty.com
+                - text: deltest-1784530223@example.com
+              - alert:
+                - list
+            - group [ref=e29]:
+              - generic [ref=e30]: Mật khẩu
+              - textbox "Mật khẩu" [ref=e31]: Test123456!
+              - alert:
+                - list
+            - button "Đăng nhập" [ref=e32]
+            - generic [ref=e33]:
+              - separator [ref=e34]
+              - generic [ref=e35]: hoặc
+            - button "Đăng nhập với Google" [ref=e36]
+          - generic [ref=e37]:
+            - separator [ref=e38]
+            - generic [ref=e39]: HOẶC
+            - separator [ref=e40]
+          - button "Tiếp tục với Google" [ref=e41]
+          - paragraph [ref=e42]:
+            - text: Chưa có tài khoản?
+            - link "Đăng ký" [ref=e43] [cursor=pointer]:
+              - /url: /register
+  - button "Open Next.js Dev Tools" [ref=e62] [cursor=pointer]:
+    - generic [ref=e65]:
+      - text: Rendering
+      - generic [ref=e66]:
+        - generic [ref=e67]: .
+        - generic [ref=e68]: .
+        - generic [ref=e69]: .
+  - alert [ref=e57]

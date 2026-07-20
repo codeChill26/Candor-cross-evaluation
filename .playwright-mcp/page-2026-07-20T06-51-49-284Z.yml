@@ -1,0 +1,30 @@
+- generic [ref=e1]:
+  - button "Open Next.js Dev Tools" [ref=e58] [cursor=pointer]
+  - alert [ref=e57]: Candor — Công cụ đánh giá nội bộ ẩn danh cho team
+  - generic [ref=e71]:
+    - banner [ref=e72]:
+      - generic [ref=e78]:
+        - paragraph [ref=e79]: Team console
+        - heading [level=1] [ref=e95]: Không gian đội nhóm
+        - paragraph [ref=e81]: Tạo team, mời thành viên và theo dõi các vòng đánh giá trong một workspace thống nhất.
+      - generic [ref=e82]:
+        - button [ref=e96]: Trở lại
+        - link [ref=e97] [cursor=pointer]:
+          - /url: /
+          - text: Trang chủ
+        - button [ref=e98]: Đăng xuất
+    - main [ref=e88]:
+      - generic [ref=e90]:
+        - generic [ref=e91]:
+          - heading [level=1] [ref=e99]: Teams của bạn
+          - button [expanded] [ref=e100]: Tạo team mới
+        - paragraph [ref=e94]: Bạn chưa thuộc team nào. Tạo team đầu tiên để bắt đầu.
+  - dialog [ref=e104]:
+    - heading "Tạo team mới" [level=2] [ref=e106]
+    - generic [ref=e107]:
+      - generic [ref=e108]:
+        - generic [ref=e109]: Tên team
+        - textbox "Tên team" [active] [ref=e110]:
+          - /placeholder: "VD: Team SnapOn"
+      - button "Tạo team" [ref=e112]
+    - button "Close" [ref=e113]

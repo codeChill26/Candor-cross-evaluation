@@ -1,0 +1,27 @@
+[    4418ms] [INFO] %cDownload the React DevTools for a better development experience: https://react.dev/link/react-devtools font-weight:bold @ http://localhost:3005/_next/static/chunks/node_modules_next_dist_1ybzpk2._.js:2477
+[    5563ms] [LOG] [HMR] connected @ http://localhost:3005/_next/static/chunks/node_modules_next_dist_1ybzpk2._.js:2477
+[    5914ms] [LOG] [Fast Refresh] rebuilding @ http://localhost:3005/_next/static/chunks/node_modules_next_dist_1ybzpk2._.js:2477
+[   13791ms] [LOG] [Fast Refresh] done in 8017ms @ http://localhost:3005/_next/static/chunks/node_modules_next_dist_1ybzpk2._.js:2477
+[   13970ms] [LOG] [Fast Refresh] rebuilding @ http://localhost:3005/_next/static/chunks/node_modules_next_dist_1ybzpk2._.js:2477
+[   13990ms] [LOG] [Fast Refresh] done in 129ms @ http://localhost:3005/_next/static/chunks/node_modules_next_dist_1ybzpk2._.js:2477
+[   14126ms] [LOG] [Fast Refresh] rebuilding @ http://localhost:3005/_next/static/chunks/node_modules_next_dist_1ybzpk2._.js:2477
+[   14157ms] [LOG] [Fast Refresh] done in 133ms @ http://localhost:3005/_next/static/chunks/node_modules_next_dist_1ybzpk2._.js:2477
+[   14371ms] [LOG] [Fast Refresh] rebuilding @ http://localhost:3005/_next/static/chunks/node_modules_next_dist_1ybzpk2._.js:2477
+[   14620ms] [LOG] [Fast Refresh] done in 357ms @ http://localhost:3005/_next/static/chunks/node_modules_next_dist_1ybzpk2._.js:2477
+[   45390ms] [LOG] [Fast Refresh] rebuilding @ http://localhost:3005/_next/static/chunks/node_modules_next_dist_1ybzpk2._.js:2477
+[   45800ms] [LOG] [Fast Refresh] done in 511ms @ http://localhost:3005/_next/static/chunks/node_modules_next_dist_1ybzpk2._.js:2477
+[   46357ms] [LOG] [Fast Refresh] rebuilding @ http://localhost:3005/_next/static/chunks/node_modules_next_dist_1ybzpk2._.js:2477
+[   46458ms] [LOG] [Fast Refresh] done in 206ms @ http://localhost:3005/_next/static/chunks/node_modules_next_dist_1ybzpk2._.js:2477
+[   46621ms] [LOG] [Fast Refresh] rebuilding @ http://localhost:3005/_next/static/chunks/node_modules_next_dist_1ybzpk2._.js:2477
+[   46633ms] [LOG] [Fast Refresh] done in 117ms @ http://localhost:3005/_next/static/chunks/node_modules_next_dist_1ybzpk2._.js:2477
+[   46897ms] [WARNING] Detected `scroll-behavior: smooth` on the `<html>` element. To disable smooth scrolling during route transitions, add `data-scroll-behavior="smooth"` to your <html> element. Learn more: https://nextjs.org/docs/messages/missing-data-scroll-behavior @ http://localhost:3005/_next/static/chunks/node_modules_next_dist_1ybzpk2._.js:2477
+[   65501ms] [LOG] [Fast Refresh] rebuilding @ http://localhost:3005/_next/static/chunks/node_modules_next_dist_1ybzpk2._.js:2477
+[   65628ms] [LOG] [Fast Refresh] done in 231ms @ http://localhost:3005/_next/static/chunks/node_modules_next_dist_1ybzpk2._.js:2477
+[   92117ms] [LOG] [Fast Refresh] rebuilding @ http://localhost:3005/_next/static/chunks/node_modules_next_dist_1ybzpk2._.js:2477
+[   92973ms] [LOG] [Fast Refresh] done in 964ms @ http://localhost:3005/_next/static/chunks/node_modules_next_dist_1ybzpk2._.js:2477
+[   93537ms] [LOG] [Fast Refresh] rebuilding @ http://localhost:3005/_next/static/chunks/node_modules_next_dist_1ybzpk2._.js:2477
+[   93609ms] [LOG] [Fast Refresh] done in 176ms @ http://localhost:3005/_next/static/chunks/node_modules_next_dist_1ybzpk2._.js:2477
+[  117718ms] [LOG] [Fast Refresh] rebuilding @ http://localhost:3005/_next/static/chunks/node_modules_next_dist_1ybzpk2._.js:2477
+[  118439ms] [LOG] [Fast Refresh] done in 825ms @ http://localhost:3005/_next/static/chunks/node_modules_next_dist_1ybzpk2._.js:2477
+[  166386ms] [LOG] [Fast Refresh] rebuilding @ http://localhost:3005/_next/static/chunks/node_modules_next_dist_1ybzpk2._.js:2477
+[  166752ms] [LOG] [Fast Refresh] done in 468ms @ http://localhost:3005/_next/static/chunks/node_modules_next_dist_1ybzpk2._.js:2477

@@ -1,0 +1,54 @@
+- generic [ref=e1]:
+  - button "Open Next.js Dev Tools" [ref=e58] [cursor=pointer]
+  - alert [ref=e57]: Candor — Công cụ đánh giá nội bộ ẩn danh cho team
+  - generic [ref=e71]:
+    - banner [ref=e72]:
+      - generic [ref=e78]:
+        - paragraph [ref=e79]: Team console
+        - heading [level=1] [ref=e151]: Không gian đội nhóm
+        - paragraph [ref=e81]: Tạo team, mời thành viên và theo dõi các vòng đánh giá trong một workspace thống nhất.
+      - generic [ref=e82]:
+        - button [ref=e152]: Trở lại
+        - link [ref=e153] [cursor=pointer]:
+          - /url: /
+          - text: Trang chủ
+        - button [ref=e154]: Đăng xuất
+    - main [ref=e88]:
+      - generic [ref=e130]:
+        - generic [ref=e131]:
+          - heading [level=1] [ref=e155]: Team Thử Xóa
+          - generic [ref=e133]:
+            - link [ref=e156] [cursor=pointer]:
+              - /url: /teams/2b6c5fca-f506-4083-b5cb-efef9b3799d4/rounds
+              - button [ref=e157]: Vòng đánh giá
+            - button [ref=e158]: Mời thành viên
+            - button [expanded] [ref=e159]: Xóa team
+        - table [ref=e139]:
+          - rowgroup [ref=e140]:
+            - row [ref=e160]:
+              - columnheader [ref=e161]: Thành viên
+              - columnheader [ref=e162]: Email
+              - columnheader [ref=e163]: Vai trò
+          - rowgroup [ref=e145]:
+            - row [ref=e164]:
+              - cell [ref=e165]: Del Tester
+              - cell [ref=e166]: deltest-1784530223@example.com
+              - cell [ref=e167]:
+                - generic [ref=e150]: Chủ team
+  - dialog [ref=e171]:
+    - heading "Xóa team “Team Thử Xóa”?" [level=2] [ref=e173]
+    - generic [ref=e174]:
+      - generic [ref=e175]:
+        - paragraph [ref=e176]: Hành động này không thể hoàn tác.
+        - paragraph [ref=e177]: "Toàn bộ dữ liệu của team sẽ bị xóa vĩnh viễn: thành viên, lời mời, mọi vòng đánh giá cùng tất cả câu trả lời và báo cáo."
+      - generic [ref=e178]:
+        - generic [ref=e179]:
+          - text: Gõ
+          - generic [ref=e180]: Team Thử Xóa
+          - text: để xác nhận
+        - textbox "Gõ Team Thử Xóa để xác nhận" [active] [ref=e181]:
+          - /placeholder: Team Thử Xóa
+      - generic [ref=e182]:
+        - button "Hủy" [ref=e183]
+        - button "Xóa vĩnh viễn" [disabled]
+    - button "Close" [ref=e184]
