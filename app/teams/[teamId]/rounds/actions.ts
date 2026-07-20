@@ -2,6 +2,7 @@
 
 import { createClient } from '@/lib/supabase/server'
 import { createRoundSchema, type CreateRoundInput } from '@/lib/validations/round'
+import { buildQuestionRows } from '@/lib/rounds/question-rows'
 
 type CreateRoundResult = { error: string } | { data: { id: string } }
 
@@ -47,15 +48,7 @@ export async function createRound(teamId: string, input: CreateRoundInput): Prom
     return { error: roundError.message }
   }
 
-  const questionRows = parsed.data.questions.map((q, index) => ({
-    round_id: round.id,
-    type: q.type,
-    prompt: q.prompt,
-    options_json: q.type === 'multiple_choice' ? q.options : null,
-    min_value: q.type === 'rating' ? 1 : null,
-    max_value: q.type === 'rating' ? 5 : null,
-    order_index: index,
-  }))
+  const questionRows = buildQuestionRows(round.id, parsed.data.questions)
 
   const { error: questionsError } = await supabase.from('round_questions').insert(questionRows)
   if (questionsError) {

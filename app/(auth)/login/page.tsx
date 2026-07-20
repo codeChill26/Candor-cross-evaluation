@@ -1,5 +1,12 @@
+import type { Metadata } from 'next'
 import Link from 'next/link'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
+
+export const metadata: Metadata = {
+  title: 'Đăng nhập',
+  description: 'Đăng nhập Candor để quản lý team và xem báo cáo đánh giá nội bộ của bạn.',
+  alternates: { canonical: '/login' },
+}
 import { Separator } from '@/components/ui/separator'
 import { LoginForm } from '@/components/auth/login-form'
 import { GoogleButton } from '@/components/auth/google-button'

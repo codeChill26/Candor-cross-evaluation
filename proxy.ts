@@ -6,5 +6,10 @@ export async function proxy(request: NextRequest) {
 }
 
 export const config = {
-  matcher: ['/((?!_next/static|_next/image|favicon.ico|.*\\.(?:svg|png|jpg|jpeg|gif|webp)$).*)'],
+  // robots.txt / sitemap.xml / opengraph-image must stay OUT of the auth proxy:
+  // they were being redirected to /login, so crawlers couldn't read the robots
+  // file or sitemap and link previews had no image.
+  matcher: [
+    '/((?!_next/static|_next/image|favicon.ico|robots.txt|sitemap.xml|opengraph-image|.*\\.(?:svg|png|jpg|jpeg|gif|webp)$).*)',
+  ],
 }

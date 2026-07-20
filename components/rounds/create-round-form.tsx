@@ -17,24 +17,18 @@ export function CreateRoundForm({ teamId }: { teamId: string }) {
   const {
     control,
     register,
+    setValue,
     handleSubmit,
     formState: { errors, isSubmitting },
   } = useForm<CreateRoundInput>({
     resolver: zodResolver(createRoundSchema),
-    defaultValues: { title: '', deadline: '', questions: [{ type: 'text', prompt: '' }] },
+    defaultValues: { title: '', deadline: '', questions: [{ type: 'paragraph', prompt: '', required: true }] },
   })
 
   async function onSubmit(values: CreateRoundInput) {
     setServerError(null)
-    const cleaned: CreateRoundInput = {
-      ...values,
-      questions: values.questions.map((q) =>
-        q.type === 'multiple_choice'
-          ? { ...q, options: q.options.map((o) => o.trim()).filter((o) => o.length > 0) }
-          : q
-      ),
-    }
-    const result = await createRound(teamId, cleaned)
+    // options are already trimmed/blank-dropped by the zod resolver transform.
+    const result = await createRound(teamId, values)
     if ('error' in result) {
       setServerError(result.error)
       return
@@ -56,7 +50,7 @@ export function CreateRoundForm({ teamId }: { teamId: string }) {
           <FieldError errors={[errors.deadline]} />
         </Field>
       </FieldGroup>
-      <QuestionBuilder control={control} register={register} errors={errors} />
+      <QuestionBuilder control={control} register={register} setValue={setValue} errors={errors} />
       {serverError && <p className="text-sm text-destructive">{serverError}</p>}
       <Button type="submit" disabled={isSubmitting}>
         {isSubmitting ? 'Đang tạo...' : 'Tạo vòng đánh giá'}

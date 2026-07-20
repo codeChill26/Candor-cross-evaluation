@@ -1,6 +1,14 @@
+import type { Metadata } from 'next'
 import Link from 'next/link'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Separator } from '@/components/ui/separator'
+
+export const metadata: Metadata = {
+  title: 'Đăng ký miễn phí',
+  description:
+    'Tạo tài khoản Candor miễn phí để mở vòng đánh giá nội bộ ẩn danh cho team của bạn.',
+  alternates: { canonical: '/register' },
+}
 import { RegisterForm } from '@/components/auth/register-form'
 import { GoogleButton } from '@/components/auth/google-button'
 

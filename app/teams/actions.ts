@@ -27,17 +27,22 @@ export async function createTeam(formData: FormData): Promise<CreateTeamResult> 
   }
 
   const slug = generateSlug(parsed.data.name)
+  const id = crypto.randomUUID()
 
-  const { data, error } = await supabase
+  // No `.select()` here (return=minimal). The owner's team_members row is
+  // created by the handle_new_team AFTER trigger, which fires only at the end
+  // of this statement — so at RETURNING time the caller isn't a member yet and
+  // the teams SELECT policy (teams_select_member) would reject the returned
+  // row with a 42501. We generate the id ourselves and return local values
+  // instead of reading the row back.
+  const { error } = await supabase
     .from('teams')
-    .insert({ name: parsed.data.name, slug, created_by: user.id })
-    .select('id, name, slug')
-    .single()
+    .insert({ id, name: parsed.data.name, slug, created_by: user.id })
 
   if (error) {
     return { error: error.message }
   }
 
   revalidatePath('/teams')
-  return { data }
+  return { data: { id, name: parsed.data.name, slug } }
 }

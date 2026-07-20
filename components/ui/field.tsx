@@ -190,8 +190,18 @@ function FieldError({
       return null
     }
 
+    // errors can be a sparse array (react-hook-form leaves holes at the
+    // indices that validated cleanly, e.g. filled multiple-choice options).
+    // filter() drops holes and entries without a message, so the Map
+    // constructor never receives an `undefined` element — passing a sparse
+    // array straight to `new Map()` throws "Iterator value undefined is not
+    // an entry object" and crashes the whole form.
     const uniqueErrors = [
-      ...new Map(errors.map((error) => [error?.message, error])).values(),
+      ...new Map(
+        errors
+          .filter((error): error is { message?: string } => Boolean(error?.message))
+          .map((error) => [error.message, error])
+      ).values(),
     ]
 
     if (uniqueErrors?.length == 1) {

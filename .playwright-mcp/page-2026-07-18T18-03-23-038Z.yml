@@ -1,0 +1,180 @@
+- generic [ref=f2e1]:
+  - generic [active]:
+    - generic [ref=f2e70]:
+      - generic [ref=f2e71]:
+        - navigation [ref=f2e73]:
+          - button [disabled] [ref=f2e74]:
+            - img "previous" [ref=f2e75]
+          - generic [ref=f2e77]:
+            - generic [ref=f2e78]: 1/
+            - text: "1"
+          - button [disabled] [ref=f2e79]:
+            - img "next" [ref=f2e80]
+        - generic [ref=f2e83]:
+          - generic "Latest available version is detected (16.2.10)." [ref=f2e86]: Next.js 16.2.10
+          - generic [ref=f2e87]: Turbopack
+      - dialog "Runtime TypeError" [ref=f2e89]:
+        - generic [ref=f2e92]:
+          - generic [ref=f2e93]:
+            - generic [ref=f2e94]:
+              - generic [ref=f2e95]: Runtime TypeError
+              - generic [ref=f2e97]:
+                - button "Copy Error Info" [ref=f2e98] [cursor=pointer]
+                - button "No related documentation found" [disabled] [ref=f2e101]
+                - button "Attach Node.js inspector" [ref=f2e104] [cursor=pointer]
+            - generic [ref=f2e113]: Iterator value undefined is not an entry object
+          - generic [ref=f2e115]:
+            - generic [ref=f2e116]:
+              - paragraph [ref=f2e118]:
+                - generic [ref=f2e123]: app\rounds\new\page.tsx (12:7) @ NewOpenRoundPage
+                - button "Open in editor" [ref=f2e124] [cursor=pointer]
+              - generic [ref=f2e129]:
+                - generic [ref=f2e130]: 10 | </p>
+                - generic [ref=f2e131]: 11 | </div>
+                - generic [ref=f2e132]: "> 12 | <CreateOpenRoundForm />"
+                - generic [ref=f2e133]: "| ^"
+                - generic [ref=f2e134]: 13 | </div>
+                - generic [ref=f2e135]: 14 | )
+                - generic [ref=f2e136]: "15 | }"
+            - generic [ref=f2e137]:
+              - paragraph [ref=f2e139]:
+                - text: Call Stack
+                - generic [ref=f2e140]: "25"
+              - generic [ref=f2e141]:
+                - generic [ref=f2e142]: new Map
+                - text: <anonymous>
+              - generic [ref=f2e143]:
+                - generic [ref=f2e144]:
+                  - text: FieldError.useMemo[content]
+                  - button "Sourcemapping failed. Click to log cause of error." [ref=f2e145] [cursor=pointer]
+                - text: file:///D:/FPT%20MATERIALS/MyOwn/CanDor-Project/.next/dev/static/chunks/_1xz_0oc._.js (369:20)
+              - generic [ref=f2e148]:
+                - generic [ref=f2e149]:
+                  - text: updateMemo
+                  - button "Sourcemapping failed. Click to log cause of error." [ref=f2e150] [cursor=pointer]
+                - text: file:///D:/FPT%20MATERIALS/MyOwn/CanDor-Project/.next/dev/static/chunks/node_modules_next_dist_compiled_react-dom_096_9a-._.js (5413:21)
+              - generic [ref=f2e153]:
+                - generic [ref=f2e154]:
+                  - text: Object.useMemo
+                  - button "Sourcemapping failed. Click to log cause of error." [ref=f2e155] [cursor=pointer]
+                - text: file:///D:/FPT%20MATERIALS/MyOwn/CanDor-Project/.next/dev/static/chunks/node_modules_next_dist_compiled_react-dom_096_9a-._.js (15465:24)
+              - generic [ref=f2e158]:
+                - generic [ref=f2e159]:
+                  - text: exports.useMemo
+                  - button "Sourcemapping failed. Click to log cause of error." [ref=f2e160] [cursor=pointer]
+                - text: file:///D:/FPT%20MATERIALS/MyOwn/CanDor-Project/.next/dev/static/chunks/node_modules_next_dist_compiled_1amofcm._.js (1742:36)
+              - generic [ref=f2e163]:
+                - generic [ref=f2e164]:
+                  - text: FieldError
+                  - button "Sourcemapping failed. Click to log cause of error." [ref=f2e165] [cursor=pointer]
+                - text: file:///D:/FPT%20MATERIALS/MyOwn/CanDor-Project/.next/dev/static/chunks/_1xz_0oc._.js (360:194)
+              - generic [ref=f2e168]:
+                - generic [ref=f2e169]:
+                  - text: Object.react_stack_bottom_frame
+                  - button "Sourcemapping failed. Click to log cause of error." [ref=f2e170] [cursor=pointer]
+                - text: file:///D:/FPT%20MATERIALS/MyOwn/CanDor-Project/.next/dev/static/chunks/node_modules_next_dist_compiled_react-dom_096_9a-._.js (15037:24)
+              - generic [ref=f2e173]:
+                - generic [ref=f2e174]:
+                  - text: renderWithHooks
+                  - button "Sourcemapping failed. Click to log cause of error." [ref=f2e175] [cursor=pointer]
+                - text: file:///D:/FPT%20MATERIALS/MyOwn/CanDor-Project/.next/dev/static/chunks/node_modules_next_dist_compiled_react-dom_096_9a-._.js (4620:24)
+              - generic [ref=f2e178]:
+                - generic [ref=f2e179]:
+                  - text: updateFunctionComponent
+                  - button "Sourcemapping failed. Click to log cause of error." [ref=f2e180] [cursor=pointer]
+                - text: file:///D:/FPT%20MATERIALS/MyOwn/CanDor-Project/.next/dev/static/chunks/node_modules_next_dist_compiled_react-dom_096_9a-._.js (6081:21)
+              - generic [ref=f2e183]:
+                - generic [ref=f2e184]:
+                  - text: beginWork
+                  - button "Sourcemapping failed. Click to log cause of error." [ref=f2e185] [cursor=pointer]
+                - text: file:///D:/FPT%20MATERIALS/MyOwn/CanDor-Project/.next/dev/static/chunks/node_modules_next_dist_compiled_react-dom_096_9a-._.js (6691:24)
+              - generic [ref=f2e188]:
+                - generic [ref=f2e189]:
+                  - text: runWithFiberInDEV
+                  - button "Sourcemapping failed. Click to log cause of error." [ref=f2e190] [cursor=pointer]
+                - text: file:///D:/FPT%20MATERIALS/MyOwn/CanDor-Project/.next/dev/static/chunks/node_modules_next_dist_compiled_react-dom_096_9a-._.js (965:74)
+              - generic [ref=f2e193]:
+                - generic [ref=f2e194]:
+                  - text: performUnitOfWork
+                  - button "Sourcemapping failed. Click to log cause of error." [ref=f2e195] [cursor=pointer]
+                - text: file:///D:/FPT%20MATERIALS/MyOwn/CanDor-Project/.next/dev/static/chunks/node_modules_next_dist_compiled_react-dom_096_9a-._.js (9555:97)
+              - generic [ref=f2e198]:
+                - generic [ref=f2e199]:
+                  - text: workLoopSync
+                  - button "Sourcemapping failed. Click to log cause of error." [ref=f2e200] [cursor=pointer]
+                - text: file:///D:/FPT%20MATERIALS/MyOwn/CanDor-Project/.next/dev/static/chunks/node_modules_next_dist_compiled_react-dom_096_9a-._.js (9449:40)
+              - generic [ref=f2e203]:
+                - generic [ref=f2e204]:
+                  - text: renderRootSync
+                  - button "Sourcemapping failed. Click to log cause of error." [ref=f2e205] [cursor=pointer]
+                - text: file:///D:/FPT%20MATERIALS/MyOwn/CanDor-Project/.next/dev/static/chunks/node_modules_next_dist_compiled_react-dom_096_9a-._.js (9433:13)
+              - generic [ref=f2e208]:
+                - generic [ref=f2e209]:
+                  - text: performWorkOnRoot
+                  - button "Sourcemapping failed. Click to log cause of error." [ref=f2e210] [cursor=pointer]
+                - text: file:///D:/FPT%20MATERIALS/MyOwn/CanDor-Project/.next/dev/static/chunks/node_modules_next_dist_compiled_react-dom_096_9a-._.js (9098:47)
+              - generic [ref=f2e213]:
+                - generic [ref=f2e214]:
+                  - text: performSyncWorkOnRoot
+                  - button "Sourcemapping failed. Click to log cause of error." [ref=f2e215] [cursor=pointer]
+                - text: file:///D:/FPT%20MATERIALS/MyOwn/CanDor-Project/.next/dev/static/chunks/node_modules_next_dist_compiled_react-dom_096_9a-._.js (10263:9)
+              - generic [ref=f2e218]:
+                - generic [ref=f2e219]:
+                  - text: flushSyncWorkAcrossRoots_impl
+                  - button "Sourcemapping failed. Click to log cause of error." [ref=f2e220] [cursor=pointer]
+                - text: file:///D:/FPT%20MATERIALS/MyOwn/CanDor-Project/.next/dev/static/chunks/node_modules_next_dist_compiled_react-dom_096_9a-._.js (10179:316)
+              - generic [ref=f2e223]:
+                - generic [ref=f2e224]:
+                  - text: processRootScheduleInMicrotask
+                  - button "Sourcemapping failed. Click to log cause of error." [ref=f2e225] [cursor=pointer]
+                - text: file:///D:/FPT%20MATERIALS/MyOwn/CanDor-Project/.next/dev/static/chunks/node_modules_next_dist_compiled_react-dom_096_9a-._.js (10200:106)
+              - generic [ref=f2e228]:
+                - generic [ref=f2e229]:
+                  - text: <unknown>
+                  - button "Sourcemapping failed. Click to log cause of error." [ref=f2e230] [cursor=pointer]
+                - text: file:///D:/FPT%20MATERIALS/MyOwn/CanDor-Project/.next/dev/static/chunks/node_modules_next_dist_compiled_react-dom_096_9a-._.js (10274:158)
+              - generic [ref=f2e233]:
+                - generic [ref=f2e234]:
+                  - text: MultipleChoiceOptions
+                  - button "Sourcemapping failed. Click to log cause of error." [ref=f2e235] [cursor=pointer]
+                - text: file:///D:/FPT%20MATERIALS/MyOwn/CanDor-Project/.next/dev/static/chunks/_1xz_0oc._.js (647:215)
+              - generic [ref=f2e238]:
+                - generic [ref=f2e239]:
+                  - text: <unknown>
+                  - button "Sourcemapping failed. Click to log cause of error." [ref=f2e240] [cursor=pointer]
+                - text: file:///D:/FPT%20MATERIALS/MyOwn/CanDor-Project/.next/dev/static/chunks/_1xz_0oc._.js (536:263)
+              - generic [ref=f2e243]:
+                - generic [ref=f2e244]: Array.map
+                - text: <anonymous>
+              - generic [ref=f2e245]:
+                - generic [ref=f2e246]:
+                  - text: QuestionBuilder
+                  - button "Sourcemapping failed. Click to log cause of error." [ref=f2e247] [cursor=pointer]
+                - text: file:///D:/FPT%20MATERIALS/MyOwn/CanDor-Project/.next/dev/static/chunks/_1xz_0oc._.js (472:20)
+              - generic [ref=f2e250]:
+                - generic [ref=f2e251]:
+                  - text: CreateOpenRoundForm
+                  - button "Sourcemapping failed. Click to log cause of error." [ref=f2e252] [cursor=pointer]
+                - text: file:///D:/FPT%20MATERIALS/MyOwn/CanDor-Project/.next/dev/static/chunks/_1xz_0oc._.js (858:215)
+              - generic [ref=f2e255]:
+                - generic [ref=f2e256]:
+                  - text: NewOpenRoundPage
+                  - button "Open NewOpenRoundPage in editor" [ref=f2e257] [cursor=pointer]
+                - text: app\rounds\new\page.tsx (12:7)
+        - generic [ref=f2e260]: "1"
+        - generic [ref=f2e261]: "2"
+    - generic [ref=f2e51] [cursor=pointer]:
+      - button "Open Next.js Dev Tools" [ref=f2e52]
+      - generic [ref=f2e262]:
+        - button "Open issues overlay" [ref=f2e263]:
+          - generic [ref=f2e264]:
+            - generic [ref=f2e265]: "0"
+            - generic [ref=f2e266]: "1"
+          - generic [ref=f2e267]: Issue
+        - button "Collapse issues badge" [ref=f2e268]
+  - generic [ref=f2e272]:
+    - heading "This page couldn’t load" [level=1] [ref=f2e275]
+    - paragraph [ref=f2e276]: Reload to try again, or go back.
+    - generic [ref=f2e277]:
+      - button "Reload" [ref=f2e279] [cursor=pointer]
+      - button "Back" [ref=f2e280] [cursor=pointer]

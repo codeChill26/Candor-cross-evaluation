@@ -1,0 +1,51 @@
+- generic [ref=f6e3]:
+  - banner [ref=f6e4]:
+    - generic [ref=f6e10]:
+      - paragraph [ref=f6e11]: Open rounds
+      - heading "Vòng đánh giá" [level=1] [ref=f6e12]
+      - paragraph [ref=f6e13]: Khu vực công khai cho người tham gia vòng đánh giá và xem báo cáo cá nhân.
+    - generic [ref=f6e14]:
+      - button "Trở lại" [ref=f6e15]
+      - link "Trang chủ" [ref=f6e16] [cursor=pointer]:
+        - /url: /
+  - main [ref=f6e17]:
+    - generic [ref=f6e19]:
+      - generic [ref=f6e20]:
+        - heading "Tạo đánh giá nhanh" [level=1] [ref=f6e21]
+        - paragraph [ref=f6e22]: Không cần tài khoản. Bạn cũng sẽ tham gia đánh giá cùng mọi người bạn mời.
+      - generic [ref=f6e23]:
+        - generic [ref=f6e24]:
+          - group [ref=f6e25]:
+            - generic [ref=f6e26]: Tên hiển thị của bạn
+            - textbox "Tên hiển thị của bạn" [ref=f6e27]:
+              - /placeholder: Nguyễn Văn A
+            - alert:
+              - list
+          - group [ref=f6e28]:
+            - generic [ref=f6e29]: Tên vòng đánh giá
+            - textbox "Tên vòng đánh giá" [ref=f6e30]:
+              - /placeholder: "VD: Đánh giá dự án nhóm"
+            - alert:
+              - list
+          - group [ref=f6e31]:
+            - generic [ref=f6e32]: Deadline
+            - textbox "Deadline" [ref=f6e33]
+            - alert:
+              - list
+        - generic [ref=f6e34]:
+          - generic [ref=f6e35]: Câu hỏi
+          - generic [ref=f6e36]:
+            - generic [ref=f6e37]:
+              - generic [ref=f6e38]: Câu 1 — Tự luận
+              - button "Xóa" [ref=f6e39]
+            - group [ref=f6e40]:
+              - textbox "Nội dung câu hỏi" [ref=f6e41]
+              - alert:
+                - list
+          - generic [ref=f6e42]:
+            - button "+ Câu hỏi thang điểm" [ref=f6e43]
+            - button "+ Câu hỏi trắc nghiệm" [ref=f6e44]
+            - button "+ Câu hỏi tự luận" [ref=f6e45]
+          - alert:
+            - list
+        - button "Tạo vòng đánh giá" [ref=f6e46]

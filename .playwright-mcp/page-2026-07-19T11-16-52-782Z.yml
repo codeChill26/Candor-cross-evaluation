@@ -1,0 +1,88 @@
+- generic [ref=f1e1]:
+  - generic [ref=f1e3]:
+    - banner [ref=f1e4]:
+      - generic [ref=f1e10]:
+        - paragraph [ref=f1e11]: Open rounds
+        - heading "Vòng đánh giá" [level=1] [ref=f1e12]
+        - paragraph [ref=f1e13]: Khu vực công khai cho người tham gia vòng đánh giá và xem báo cáo cá nhân.
+      - generic [ref=f1e14]:
+        - button "Trở lại" [ref=f1e15]
+        - link "Trang chủ" [ref=f1e16] [cursor=pointer]:
+          - /url: /
+    - main [ref=f1e17]:
+      - generic [ref=f1e19]:
+        - generic [ref=f1e20]:
+          - heading "Tạo đánh giá nhanh" [level=1] [ref=f1e21]
+          - paragraph [ref=f1e22]: Không cần tài khoản. Bạn cũng sẽ tham gia đánh giá cùng mọi người bạn mời.
+        - generic [ref=f1e23]:
+          - generic [ref=f1e24]:
+            - group [ref=f1e25]:
+              - generic [ref=f1e26]: Tên hiển thị của bạn
+              - textbox "Tên hiển thị của bạn" [ref=f1e27]:
+                - /placeholder: Nguyễn Văn A
+              - alert:
+                - list
+            - group [ref=f1e28]:
+              - generic [ref=f1e29]: Tên vòng đánh giá
+              - textbox "Tên vòng đánh giá" [ref=f1e30]:
+                - /placeholder: "VD: Đánh giá dự án nhóm"
+              - alert:
+                - list
+            - group [ref=f1e31]:
+              - generic [ref=f1e32]: Deadline
+              - textbox "Deadline" [ref=f1e33]
+              - alert:
+                - list
+          - generic [ref=f1e34]:
+            - generic [ref=f1e35]: Câu hỏi
+            - generic [ref=f1e36]:
+              - generic [ref=f1e37]:
+                - generic [ref=f1e38]: Câu 1 — 📝 Đoạn văn
+                - generic [ref=f1e39]:
+                  - button "Di chuyển lên" [disabled]: ↑
+                  - button "Di chuyển xuống" [ref=f1e59]: ↓
+                  - button "Xóa" [ref=f1e40]
+              - group [ref=f1e41]:
+                - textbox "Nội dung câu hỏi" [ref=f1e42]
+                - alert:
+                  - list
+              - generic [ref=f1e43]:
+                - checkbox "Bắt buộc trả lời" [checked] [ref=f1e44]
+                - text: Bắt buộc trả lời
+            - generic [ref=f1e60]:
+              - generic [ref=f1e61]:
+                - generic [ref=f1e62]: Câu 2 — 🔘 Trắc nghiệm
+                - generic [ref=f1e63]:
+                  - button "Di chuyển lên" [ref=f1e64]: ↑
+                  - button "Di chuyển xuống" [disabled]: ↓
+                  - button "Xóa" [ref=f1e65]
+              - group [ref=f1e66]:
+                - textbox "Nội dung câu hỏi" [active] [ref=f1e67]
+                - alert:
+                  - list
+              - generic [ref=f1e68]:
+                - generic [ref=f1e69]:
+                  - textbox "Lựa chọn 1" [ref=f1e70]
+                  - button "Xóa lựa chọn" [disabled]: ×
+                - generic [ref=f1e71]:
+                  - textbox "Lựa chọn 2" [ref=f1e72]
+                  - button "Xóa lựa chọn" [disabled]: ×
+                - button "+ Thêm lựa chọn" [ref=f1e73]
+              - generic [ref=f1e74]:
+                - checkbox "Bắt buộc trả lời" [checked] [ref=f1e75]
+                - text: Bắt buộc trả lời
+            - generic [ref=f1e45]:
+              - combobox "Loại câu hỏi" [ref=f1e46]:
+                - option "📝 Đoạn văn"
+                - option "✏️ Trả lời ngắn"
+                - option "⭐ Chấm điểm 1–5"
+                - option "☑️ Checkbox (chọn nhiều)"
+                - option "🔘 Trắc nghiệm" [selected]
+                - option "📋 Dropdown"
+                - option "🎯 NPS 0–10"
+              - button "+ Thêm câu hỏi" [ref=f1e47]
+            - alert:
+              - list
+          - button "Tạo vòng đánh giá" [ref=f1e48]
+  - button "Open Next.js Dev Tools" [ref=f1e54] [cursor=pointer]
+  - alert [ref=f1e58]

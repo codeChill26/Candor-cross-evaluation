@@ -1,0 +1,36 @@
+- generic [active] [ref=e1]:
+  - generic [ref=e2]:
+    - generic [ref=e3]:
+      - heading "Tạo đánh giá nhanh" [level=1] [ref=e4]
+      - paragraph [ref=e5]: Không cần tài khoản. Bạn cũng sẽ tham gia đánh giá cùng mọi người bạn mời.
+    - generic [ref=e6]:
+      - generic [ref=e7]:
+        - group [ref=e8]:
+          - generic [ref=e9]: Tên hiển thị của bạn
+          - textbox "Tên hiển thị của bạn" [ref=e10]:
+            - /placeholder: Nguyễn Văn A
+            - text: PlaceAPI_BM
+        - group [ref=e11]:
+          - generic [ref=e12]: Tên vòng đánh giá
+          - textbox "Tên vòng đánh giá" [ref=e13]:
+            - /placeholder: "VD: Đánh giá dự án nhóm"
+            - text: aaa
+        - group [ref=e14]:
+          - generic [ref=e15]: Deadline
+          - textbox "Deadline" [ref=e16]: 2026-07-20T21:18
+      - generic [ref=e17]:
+        - generic [ref=e18]: Câu hỏi
+        - generic [ref=e19]:
+          - generic [ref=e20]:
+            - generic [ref=e21]: Câu 1 — Tự luận
+            - button "Xóa" [ref=e22]
+          - group [ref=e23]:
+            - textbox "Nội dung câu hỏi" [ref=e24]: asd
+        - generic [ref=e25]:
+          - button "+ Câu hỏi thang điểm" [ref=e26]
+          - button "+ Câu hỏi trắc nghiệm" [ref=e27]
+          - button "+ Câu hỏi tự luận" [ref=e28]
+      - paragraph [ref=e40]: "{}"
+      - button "Tạo vòng đánh giá" [ref=e29]
+  - button "Open Next.js Dev Tools" [ref=e35] [cursor=pointer]
+  - alert [ref=e39]

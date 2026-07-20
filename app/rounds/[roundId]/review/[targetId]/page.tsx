@@ -15,7 +15,7 @@ export default async function ReviewPage({
 
   const { data: questions } = await supabase
     .from('round_questions')
-    .select('id, type, prompt, options_json')
+    .select('id, type, prompt, options_json, required')
     .eq('round_id', roundId)
     .order('order_index', { ascending: true })
 

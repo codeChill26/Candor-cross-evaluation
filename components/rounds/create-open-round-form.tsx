@@ -3,7 +3,7 @@
 import { useState } from 'react'
 import { useRouter } from 'next/navigation'
 import { useForm } from 'react-hook-form'
-import type { Control, FieldErrors, UseFormRegister } from 'react-hook-form'
+import type { Control, FieldErrors, UseFormRegister, UseFormSetValue } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { createOpenRoundSchema, type CreateOpenRoundInput, type CreateRoundInput } from '@/lib/validations/round'
 import { createOpenRound } from '@/app/rounds/new/actions'
@@ -18,6 +18,7 @@ export function CreateOpenRoundForm() {
   const {
     control,
     register,
+    setValue,
     handleSubmit,
     formState: { errors, isSubmitting },
   } = useForm<CreateOpenRoundInput>({
@@ -26,22 +27,15 @@ export function CreateOpenRoundForm() {
       displayName: '',
       title: '',
       deadline: '',
-      questions: [{ type: 'text', prompt: '' }],
+      questions: [{ type: 'paragraph', prompt: '', required: true }],
     },
   })
 
   async function onSubmit(values: CreateOpenRoundInput) {
     setServerError(null)
     const { displayName, ...roundInput } = values
-    const cleaned = {
-      ...roundInput,
-      questions: roundInput.questions.map((q) =>
-        q.type === 'multiple_choice'
-          ? { ...q, options: q.options.map((o) => o.trim()).filter((o) => o.length > 0) }
-          : q
-      ),
-    }
-    const result = await createOpenRound(displayName, cleaned)
+    // options are already trimmed/blank-dropped by the zod resolver transform.
+    const result = await createOpenRound(displayName, roundInput)
     if ('error' in result) {
       setServerError(result.error)
       return
@@ -54,6 +48,7 @@ export function CreateOpenRoundForm() {
   // ever touches the 'questions' path, so this cast is safe at runtime.
   const roundControl = control as unknown as Control<CreateRoundInput>
   const roundRegister = register as unknown as UseFormRegister<CreateRoundInput>
+  const roundSetValue = setValue as unknown as UseFormSetValue<CreateRoundInput>
   const roundErrors = errors as unknown as FieldErrors<CreateRoundInput>
 
   return (
@@ -75,7 +70,7 @@ export function CreateOpenRoundForm() {
           <FieldError errors={[errors.deadline]} />
         </Field>
       </FieldGroup>
-      <QuestionBuilder control={roundControl} register={roundRegister} errors={roundErrors} />
+      <QuestionBuilder control={roundControl} register={roundRegister} setValue={roundSetValue} errors={roundErrors} />
       {serverError && <p className="text-sm text-destructive">{serverError}</p>}
       <Button type="submit" disabled={isSubmitting}>
         {isSubmitting ? 'Đang tạo...' : 'Tạo vòng đánh giá'}

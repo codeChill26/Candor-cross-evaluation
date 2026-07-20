@@ -1,0 +1,8 @@
+[     610ms] [INFO] %cDownload the React DevTools for a better development experience: https://react.dev/link/react-devtools font-weight:bold @ http://localhost:3100/_next/static/chunks/node_modules_next_dist_1ybzpk2._.js:2477
+[     709ms] [LOG] [HMR] connected @ http://localhost:3100/_next/static/chunks/node_modules_next_dist_1ybzpk2._.js:2477
+[     919ms] [LOG] [Fast Refresh] rebuilding @ http://localhost:3100/_next/static/chunks/node_modules_next_dist_1ybzpk2._.js:2477
+[     982ms] [LOG] [Fast Refresh] done in 167ms @ http://localhost:3100/_next/static/chunks/node_modules_next_dist_1ybzpk2._.js:2477
+[   16740ms] [LOG] [Fast Refresh] rebuilding @ http://localhost:3100/_next/static/chunks/node_modules_next_dist_1ybzpk2._.js:2477
+[   16750ms] [LOG] [Fast Refresh] done in 115ms @ http://localhost:3100/_next/static/chunks/node_modules_next_dist_1ybzpk2._.js:2477
+[   19592ms] [ERROR] Cross-Origin-Opener-Policy policy would block the window.closed call. @ http://localhost:3100/_next/static/chunks/node_modules_%40firebase_auth_dist_esm_1yb7p9-._.js:9191
+[   19593ms] [ERROR] Cross-Origin-Opener-Policy policy would block the window.closed call. @ http://localhost:3100/_next/static/chunks/node_modules_%40firebase_auth_dist_esm_1yb7p9-._.js:9191

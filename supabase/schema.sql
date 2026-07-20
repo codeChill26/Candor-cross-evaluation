@@ -63,12 +63,16 @@ create table public.rounds (
 create table public.round_questions (
   id uuid primary key default gen_random_uuid(),
   round_id uuid not null references public.rounds (id) on delete cascade,
-  type text not null check (type in ('rating', 'multiple_choice', 'text')),
+  type text not null check (
+    type in ('paragraph', 'short_text', 'rating', 'checkbox',
+             'multiple_choice', 'dropdown', 'nps', 'text')
+  ),
   prompt text not null,
   options_json jsonb,
   min_value int,
   max_value int,
-  order_index int not null default 0
+  order_index int not null default 0,
+  required boolean not null default true
 );
 
 -- Day 2 feature.
@@ -164,27 +168,46 @@ create policy "teams_update_owner"
 
 -- ---------- team_members ----------
 
+-- security definer: a team_members policy that queried team_members itself
+-- would re-trigger that same policy while evaluating it (infinite recursion).
+-- These functions run as the function owner, which bypasses RLS, breaking
+-- the cycle for any policy — on team_members or elsewhere — that needs to
+-- check membership.
+create function public.is_team_member(_team_id uuid)
+returns boolean
+language sql
+security definer set search_path = public
+stable
+as $$
+  select exists (
+    select 1 from public.team_members
+    where team_id = _team_id and user_id = auth.uid()
+  );
+$$;
+
+create function public.is_team_owner(_team_id uuid)
+returns boolean
+language sql
+security definer set search_path = public
+stable
+as $$
+  select exists (
+    select 1 from public.team_members
+    where team_id = _team_id and user_id = auth.uid() and role = 'owner'
+  );
+$$;
+
 create policy "team_members_select_teammate"
   on public.team_members for select
   to authenticated
-  using (
-    exists (
-      select 1 from public.team_members tm
-      where tm.team_id = team_members.team_id and tm.user_id = auth.uid()
-    )
-  );
+  using (public.is_team_member(team_id));
 
 create policy "team_members_delete_owner_or_self"
   on public.team_members for delete
   to authenticated
   using (
     user_id = auth.uid()
-    or exists (
-      select 1 from public.team_members tm
-      where tm.team_id = team_members.team_id
-        and tm.user_id = auth.uid()
-        and tm.role = 'owner'
-    )
+    or public.is_team_owner(team_id)
   );
 
 -- No client-side INSERT policy: rows are created only by the
@@ -472,17 +495,29 @@ alter table public.rounds
 alter table public.profiles
   alter column email drop not null;
 
+-- security definer: mirrors is_team_member. A round_participants policy that
+-- queried round_participants, or a rounds policy that queried round_participants
+-- whose own policy queries rounds, would recurse. This function bypasses RLS
+-- and breaks both cycles.
+create function public.is_round_participant(_round_id uuid)
+returns boolean
+language sql
+security definer set search_path = public
+stable
+as $$
+  select exists (
+    select 1 from public.round_participants
+    where round_id = _round_id and user_id = auth.uid()
+  );
+$$;
+
 -- A guest can see an open round once they've joined it as a participant.
 create policy "rounds_select_open_participant"
   on public.rounds for select
   to authenticated
   using (
     team_id is null
-    and exists (
-      select 1 from public.round_participants
-      where round_participants.round_id = rounds.id
-        and round_participants.user_id = auth.uid()
-    )
+    and public.is_round_participant(id)
   );
 
 -- Anyone authenticated (incl. anonymous) can create an open round for themselves.
@@ -511,13 +546,10 @@ create policy "round_participants_select_open_participant"
   on public.round_participants for select
   to authenticated
   using (
-    exists (
+    public.is_round_participant(round_participants.round_id)
+    and exists (
       select 1 from public.rounds
       where rounds.id = round_participants.round_id and rounds.team_id is null
-    )
-    and exists (
-      select 1 from public.round_participants rp2
-      where rp2.round_id = round_participants.round_id and rp2.user_id = auth.uid()
     )
   );
 
@@ -571,5 +603,5 @@ create policy "teams_insert_self_as_creator"
   to authenticated
   with check (
     auth.uid() = created_by
-    and (select (auth.jwt()->>'is_anonymous')::boolean) is false
+    and (select (auth.jwt()->>'is_anonymous')::boolean) is not true
   );

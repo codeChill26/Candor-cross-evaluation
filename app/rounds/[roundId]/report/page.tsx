@@ -5,7 +5,6 @@ import { aggregateReport, type ReportQuestion, type ReportResponse } from '@/lib
 import { shuffle } from '@/lib/utils/shuffle'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { ReportSummary } from '@/components/reports/report-summary'
-import { ResponseCard } from '@/components/reports/response-card'
 
 export default async function ReportPage({ params }: { params: Promise<{ roundId: string }> }) {
   const { roundId } = await params
@@ -41,8 +40,7 @@ export default async function ReportPage({ params }: { params: Promise<{ roundId
     .order('order_index', { ascending: true })
 
   // RLS (responses_select_own_when_closed) already restricts this to the
-  // caller's own responses in this closed round — no extra filter needed,
-  // matching how app/teams/page.tsx trusts RLS alone for `teams`.
+  // caller's own responses in this closed round — no extra filter needed.
   const { data: responses } = await supabase.from('responses').select('id, answers_json').eq('round_id', roundId)
 
   const { count: participantCount } = await supabase
@@ -61,8 +59,12 @@ export default async function ReportPage({ params }: { params: Promise<{ roundId
     answers: r.answers_json,
   }))
 
-  const summary = aggregateReport(questionsForAggregate, responsesForAggregate)
-  const shuffledResponses = shuffle(responsesForAggregate)
+  // Shuffle each free-text question's answers INDEPENDENTLY: a shared order
+  // across questions would let someone line up "answer #1 to Q1" with
+  // "answer #1 to Q2" and reconstruct a whole reviewer's submission.
+  const summary = aggregateReport(questionsForAggregate, responsesForAggregate).map((r) =>
+    r.type === 'text' ? { ...r, answers: shuffle(r.answers) } : r
+  )
 
   return (
     <div className="space-y-8">
@@ -75,18 +77,6 @@ export default async function ReportPage({ params }: { params: Promise<{ roundId
         </p>
       )}
       <ReportSummary summary={summary} />
-      <div className="space-y-4">
-        <h2 className="text-lg font-medium">Từng phản hồi riêng lẻ</h2>
-        {shuffledResponses.length > 0 ? (
-          <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
-            {shuffledResponses.map((r) => (
-              <ResponseCard key={r.id} questions={questionsForAggregate} answers={r.answers} />
-            ))}
-          </div>
-        ) : (
-          <p className="text-sm text-muted-foreground">Chưa có ai đánh giá bạn trong vòng này.</p>
-        )}
-      </div>
     </div>
   )
 }
