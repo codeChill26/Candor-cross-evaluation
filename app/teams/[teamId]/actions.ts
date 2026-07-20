@@ -1,6 +1,8 @@
 'use server'
 
+import { revalidatePath } from 'next/cache'
 import { createClient } from '@/lib/supabase/server'
+import { createAdminClient } from '@/lib/supabase/admin'
 import { inviteMemberSchema } from '@/lib/validations/team'
 import { generateInviteToken, inviteExpiryTimestamp } from '@/lib/utils/invite-token'
 import { headers } from 'next/headers'
@@ -193,4 +195,44 @@ export async function createBulkInvites(
       emailDeliveryFailed: Boolean(sendError),
     },
   }
+}
+
+type DeleteTeamResult = { error: string } | { data: true }
+
+// Permanently deletes a team. Every FK into teams/rounds is ON DELETE CASCADE,
+// so this also removes members, invites, rounds, questions, participants,
+// submission_status and responses. There is no undo.
+//
+// The write goes through the admin client: `teams` has no RLS DELETE policy,
+// and the ownership rule is enforced here in code instead (same approach as
+// createTeam / joinOpenRound).
+export async function deleteTeam(teamId: string): Promise<DeleteTeamResult> {
+  const supabase = await createClient()
+  const {
+    data: { user },
+  } = await supabase.auth.getUser()
+  if (!user) {
+    return { error: 'Không xác thực được người dùng' }
+  }
+
+  const admin = createAdminClient()
+
+  const { data: membership } = await admin
+    .from('team_members')
+    .select('role')
+    .eq('team_id', teamId)
+    .eq('user_id', user.id)
+    .maybeSingle()
+
+  if (membership?.role !== 'owner') {
+    return { error: 'Chỉ chủ team mới có thể xóa team' }
+  }
+
+  const { error } = await admin.from('teams').delete().eq('id', teamId)
+  if (error) {
+    return { error: error.message }
+  }
+
+  revalidatePath('/teams')
+  return { data: true }
 }

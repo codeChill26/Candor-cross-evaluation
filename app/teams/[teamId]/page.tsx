@@ -3,6 +3,7 @@ import { notFound } from 'next/navigation'
 import { createClient } from '@/lib/supabase/server'
 import { MembersTable, type Member } from '@/components/teams/members-table'
 import { InviteDialog } from '@/components/teams/invite-dialog'
+import { DeleteTeamDialog } from '@/components/teams/delete-team-dialog'
 import { Button } from '@/components/ui/button'
 
 export default async function TeamDetailPage({
@@ -18,9 +19,14 @@ export default async function TeamDetailPage({
 
   const { data: members } = await supabase
     .from('team_members')
-    .select('id, role, profiles(full_name, email)')
+    .select('id, user_id, role, profiles(full_name, email)')
     .eq('team_id', teamId)
     .order('joined_at', { ascending: true })
+
+  const {
+    data: { user },
+  } = await supabase.auth.getUser()
+  const isOwner = (members ?? []).some((m) => m.user_id === user?.id && m.role === 'owner')
 
   return (
     <div className="space-y-6">
@@ -31,6 +37,7 @@ export default async function TeamDetailPage({
             <Button variant="outline">Vòng đánh giá</Button>
           </Link>
           <InviteDialog teamId={team.id} teamName={team.name} />
+          {isOwner && <DeleteTeamDialog teamId={team.id} teamName={team.name} />}
         </div>
       </div>
       {/* Cast: without generated Database types, supabase-js can't infer that
