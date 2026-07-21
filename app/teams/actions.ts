@@ -4,6 +4,7 @@ import { revalidatePath } from 'next/cache'
 import { createClient } from '@/lib/supabase/server'
 import { createTeamSchema } from '@/lib/validations/team'
 import { generateSlug } from '@/lib/utils/slug'
+import { dbError } from '@/lib/utils/action-error'
 
 type CreateTeamResult =
   | { error: string }
@@ -40,7 +41,7 @@ export async function createTeam(formData: FormData): Promise<CreateTeamResult> 
     .insert({ id, name: parsed.data.name, slug, created_by: user.id })
 
   if (error) {
-    return { error: error.message }
+    return dbError('createTeam', error)
   }
 
   revalidatePath('/teams')

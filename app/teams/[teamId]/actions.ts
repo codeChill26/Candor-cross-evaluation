@@ -11,6 +11,7 @@ import { isInviteExpired } from '@/lib/utils/invite-token'
 import { MAX_EMAILS_PER_SUBMIT, classifyEmails } from '@/lib/utils/parse-email-list'
 import { resend } from '@/lib/email/resend'
 import { buildInviteEmailSubject, buildInviteEmailHtml } from '@/lib/email/invite-email'
+import { dbError } from '@/lib/utils/action-error'
 
 type CreateInviteResult =
   | { error: string }
@@ -48,7 +49,7 @@ export async function createInvite(teamId: string, formData: FormData): Promise<
     .single()
 
   if (error) {
-    return { error: error.message }
+    return dbError('createInvite', error)
   }
 
   return { data }
@@ -107,7 +108,7 @@ export async function createBulkInvites(
     .select('profiles(email)')
     .eq('team_id', teamId)
   if (membersError) {
-    return { error: membersError.message }
+    return dbError('createBulkInvites.members', membersError)
   }
   const memberEmails = new Set(
     ((members ?? []) as unknown as { profiles: { email: string } }[]).map((m) =>
@@ -127,7 +128,7 @@ export async function createBulkInvites(
     .select('email, expires_at, used_at')
     .eq('team_id', teamId)
   if (invitesError) {
-    return { error: invitesError.message }
+    return dbError('createBulkInvites.invites', invitesError)
   }
   const pendingInviteEmails = new Set(
     (existingInvites ?? [])
@@ -158,13 +159,23 @@ export async function createBulkInvites(
     .insert(rows)
     .select('token, email')
   if (insertError) {
-    return { error: insertError.message }
+    return dbError('createBulkInvites.insert', insertError)
   }
 
+  // Build the emailed link from the CONFIGURED site URL, not the request Host
+  // header (which a client can forge → invite links pointing at a phishing
+  // domain). Fall back to the request host only in local dev, where
+  // NEXT_PUBLIC_SITE_URL isn't set.
   const headersList = await headers()
   const host = headersList.get('host') ?? 'localhost:3000'
   const protocol = headersList.get('x-forwarded-proto') ?? (host.startsWith('localhost') ? 'http' : 'https')
-  const origin = `${protocol}://${host}`
+  const origin = process.env.NEXT_PUBLIC_SITE_URL ?? `${protocol}://${host}`
+
+  // Use the team's real name from the DB, not the client-supplied `teamName`
+  // argument (which could be spoofed in the outgoing email). This read also
+  // confirms the caller can see the team (RLS).
+  const { data: team } = await supabase.from('teams').select('name').eq('id', teamId).single()
+  const trustedTeamName = team?.name ?? teamName
 
   const { data: inviterProfile } = await supabase
     .from('profiles')
@@ -176,7 +187,7 @@ export async function createBulkInvites(
   const { error: sendError } = await resend.batch.send(
     (inserted ?? []).map((invite) => {
       const joinUrl = `${origin}/join/${invite.token}`
-      const emailInput = { teamName, inviterName, joinUrl }
+      const emailInput = { teamName: trustedTeamName, inviterName, joinUrl }
       return {
         from: 'Candor <onboarding@resend.dev>',
         to: [invite.email as string],
@@ -230,7 +241,7 @@ export async function deleteTeam(teamId: string): Promise<DeleteTeamResult> {
 
   const { error } = await admin.from('teams').delete().eq('id', teamId)
   if (error) {
-    return { error: error.message }
+    return dbError('deleteTeam', error)
   }
 
   revalidatePath('/teams')
@@ -282,7 +293,7 @@ export async function removeMember(teamId: string, memberUserId: string): Promis
     .eq('team_id', teamId)
     .eq('user_id', memberUserId)
   if (error) {
-    return { error: error.message }
+    return dbError('removeMember', error)
   }
 
   revalidatePath(`/teams/${teamId}`)

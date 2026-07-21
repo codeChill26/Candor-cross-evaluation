@@ -2,6 +2,7 @@ import Link from 'next/link'
 import { createClient } from '@/lib/supabase/server'
 import { Button } from '@/components/ui/button'
 import { RoundCard } from '@/components/rounds/round-card'
+import { RoundsLive } from '@/components/rounds/rounds-live'
 import { getRoundProgress } from './progress-actions'
 
 export default async function RoundsPage({ params }: { params: Promise<{ teamId: string }> }) {
@@ -39,6 +40,7 @@ export default async function RoundsPage({ params }: { params: Promise<{ teamId:
 
   return (
     <div className="space-y-6">
+      <RoundsLive teamId={teamId} />
       <div className="flex items-center justify-between">
         <h1 className="text-2xl font-semibold">Vòng đánh giá</h1>
         {isOwner && (

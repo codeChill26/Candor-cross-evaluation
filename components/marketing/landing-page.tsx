@@ -57,16 +57,23 @@ export function LandingPage() {
       </div>
 
       <header className="relative mx-auto flex max-w-7xl items-center justify-between px-4 py-5 sm:px-6 lg:px-8">
-        <Link href="/" className="flex items-center gap-3">
+        <Link href="/" className="flex items-center gap-1.25">
           <Image
             src="/Logo_Header.png"
+            alt=""
+            width={1536}
+            height={1024}
+            priority
+            className="h-14 w-auto object-contain"
+          />
+          <Image
+            src="/Logo_Name.png"
             alt="Candor"
             width={1536}
             height={1024}
             priority
-            className="h-11 w-auto object-contain"
+            className="h-20 w-auto object-contain"
           />
-          <span className="text-base font-semibold tracking-tight sm:text-lg">Candor</span>
         </Link>
 
         <div className="flex items-center gap-2">

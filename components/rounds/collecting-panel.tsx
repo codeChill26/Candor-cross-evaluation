@@ -5,6 +5,8 @@ import { useRouter } from 'next/navigation'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { createClient } from '@/lib/supabase/client'
+import { usePollingRefresh } from '@/lib/hooks/use-polling-refresh'
+import { MIN_PARTICIPANTS } from '@/lib/rounds/constants'
 import { startRound } from '@/app/rounds/[roundId]/start-actions'
 
 export function CollectingPanel({
@@ -23,6 +25,11 @@ export function CollectingPanel({
   const router = useRouter()
   const [error, setError] = useState<string | null>(null)
   const [pending, setPending] = useState(false)
+
+  // Fallback so the roster fills in and the "Bắt đầu" auto-advance still fire
+  // without a reload even if round_participants/rounds aren't in the realtime
+  // publication yet. Short interval — a waiting room should feel live.
+  usePollingRefresh(3500)
 
   // Live waiting room. Subscribing runs in the browser (a serverless function
   // can't hold the socket). On any change we just re-run the server component
@@ -83,11 +90,11 @@ export function CollectingPanel({
       </div>
       {error && <p className="text-sm text-destructive">{error}</p>}
       {isCreator && (
-        <Button onClick={handleStart} disabled={pending || participantNames.length < 2}>
+        <Button onClick={handleStart} disabled={pending || participantNames.length < MIN_PARTICIPANTS}>
           {pending
             ? 'Đang bắt đầu...'
-            : participantNames.length < 2
-              ? 'Cần ít nhất 2 người tham gia'
+            : participantNames.length < MIN_PARTICIPANTS
+              ? `Cần ít nhất ${MIN_PARTICIPANTS} người tham gia`
               : 'Bắt đầu đánh giá'}
         </Button>
       )}

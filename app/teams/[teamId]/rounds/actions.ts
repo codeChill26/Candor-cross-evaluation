@@ -3,6 +3,8 @@
 import { createClient } from '@/lib/supabase/server'
 import { createRoundSchema, type CreateRoundInput } from '@/lib/validations/round'
 import { buildQuestionRows } from '@/lib/rounds/question-rows'
+import { dbError } from '@/lib/utils/action-error'
+import { MIN_PARTICIPANTS } from '@/lib/rounds/constants'
 
 type CreateRoundResult = { error: string } | { data: { id: string } }
 
@@ -26,10 +28,10 @@ export async function createRound(teamId: string, input: CreateRoundInput): Prom
     .eq('team_id', teamId)
 
   if (membersError) {
-    return { error: membersError.message }
+    return dbError('createRound.members', membersError)
   }
-  if (!members || members.length < 2) {
-    return { error: 'Team cần ít nhất 2 thành viên để tạo vòng đánh giá' }
+  if (!members || members.length < MIN_PARTICIPANTS) {
+    return { error: `Team cần ít nhất ${MIN_PARTICIPANTS} thành viên để đảm bảo ẩn danh` }
   }
   if (!members.some((m) => m.user_id === user.id && m.role === 'owner')) {
     return { error: 'Chỉ chủ team mới có thể tạo vòng đánh giá' }
@@ -48,20 +50,20 @@ export async function createRound(teamId: string, input: CreateRoundInput): Prom
     .single()
 
   if (roundError) {
-    return { error: roundError.message }
+    return dbError('createRound.round', roundError)
   }
 
   const questionRows = buildQuestionRows(round.id, parsed.data.questions)
 
   const { error: questionsError } = await supabase.from('round_questions').insert(questionRows)
   if (questionsError) {
-    return { error: questionsError.message }
+    return dbError('createRound.questions', questionsError)
   }
 
   const participantRows = members.map((m) => ({ round_id: round.id, user_id: m.user_id }))
   const { error: participantsError } = await supabase.from('round_participants').insert(participantRows)
   if (participantsError) {
-    return { error: participantsError.message }
+    return dbError('createRound.participants', participantsError)
   }
 
   return { data: { id: round.id } }

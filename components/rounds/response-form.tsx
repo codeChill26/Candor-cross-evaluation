@@ -1,12 +1,13 @@
 'use client'
 
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { useRouter } from 'next/navigation'
 import { Button } from '@/components/ui/button'
 import { Field, FieldGroup, FieldLabel } from '@/components/ui/field'
 import { Input } from '@/components/ui/input'
 import { Textarea } from '@/components/ui/textarea'
 import type { QuestionType } from '@/lib/validations/round'
+import { clearDraft, loadDraft, pruneAnswers, saveDraft } from '@/lib/rounds/draft'
 import { submitResponse } from '@/app/rounds/[roundId]/review/[targetId]/actions'
 
 type Question = {
@@ -32,12 +33,27 @@ export function ResponseForm({
   questions: Question[]
 }) {
   const router = useRouter()
-  const [answers, setAnswers] = useState<Record<string, AnswerValue>>({})
+  // Start from the saved draft so re-opening a target shows what you had.
+  const [answers, setAnswers] = useState<Record<string, AnswerValue>>(
+    () => loadDraft(roundId, targetId) ?? {}
+  )
   const [error, setError] = useState<string | null>(null)
   const [pending, setPending] = useState(false)
+  const [confirming, setConfirming] = useState(false)
+
+  // Persist every edit locally (browser only — never the DB) so the reviewer
+  // can leave and come back to edit until they finalize.
+  useEffect(() => {
+    saveDraft(roundId, targetId, answers)
+  }, [answers, roundId, targetId])
 
   function set(id: string, value: AnswerValue) {
     setAnswers((prev) => ({ ...prev, [id]: value }))
+  }
+
+  function handleSaveDraft() {
+    saveDraft(roundId, targetId, answers)
+    router.push(`/rounds/${roundId}`)
   }
 
   function toggleCheckbox(id: string, option: string) {
@@ -52,21 +68,23 @@ export function ResponseForm({
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault()
+    // First "Nộp" (or an accidental Enter) only opens the confirmation — you
+    // can't edit after submitting, so the finality has to be explicit.
+    if (!confirming) {
+      setConfirming(true)
+      return
+    }
     setPending(true)
     setError(null)
-    // Drop blank/empty answers so optional questions can be skipped and the
-    // server schema doesn't reject empty strings.
-    const cleaned = Object.fromEntries(
-      Object.entries(answers).filter(
-        ([, v]) => v !== '' && !(Array.isArray(v) && v.length === 0)
-      )
-    )
-    const result = await submitResponse(roundId, targetId, cleaned)
+    // pruneAnswers drops blank/empty answers so optional questions can be
+    // skipped and the server schema doesn't reject empty strings.
+    const result = await submitResponse(roundId, targetId, pruneAnswers(answers))
     setPending(false)
     if ('error' in result) {
       setError(result.error)
       return
     }
+    clearDraft(roundId, targetId)
     router.push(`/rounds/${roundId}`)
   }
 
@@ -186,9 +204,28 @@ export function ResponseForm({
         })}
       </FieldGroup>
       {error && <p className="text-sm text-destructive">{error}</p>}
-      <Button type="submit" disabled={pending}>
-        {pending ? 'Đang nộp...' : 'Nộp đánh giá'}
-      </Button>
+      {confirming ? (
+        <div className="space-y-3 rounded-lg border border-amber-500/50 bg-amber-50 p-4 dark:bg-amber-950/30">
+          <p className="text-sm text-amber-700 dark:text-amber-300">
+            Sau khi nộp, đánh giá sẽ được ẩn danh và <strong>không thể sửa lại</strong>. Bạn chắc chưa?
+          </p>
+          <div className="flex flex-wrap gap-2">
+            <Button type="submit" disabled={pending}>
+              {pending ? 'Đang nộp...' : 'Xác nhận nộp'}
+            </Button>
+            <Button type="button" variant="outline" onClick={() => setConfirming(false)} disabled={pending}>
+              Quay lại
+            </Button>
+          </div>
+        </div>
+      ) : (
+        <div className="flex flex-wrap gap-2">
+          <Button type="submit">Nộp đánh giá</Button>
+          <Button type="button" variant="outline" onClick={handleSaveDraft}>
+            Lưu nháp
+          </Button>
+        </div>
+      )}
     </form>
   )
 }

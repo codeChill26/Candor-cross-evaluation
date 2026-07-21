@@ -2,6 +2,7 @@ import Link from 'next/link'
 import { headers } from 'next/headers'
 import { notFound } from 'next/navigation'
 import { createClient } from '@/lib/supabase/server'
+import { createAdminClient } from '@/lib/supabase/admin'
 import { getEffectiveStatus } from '@/lib/utils/round-status'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
@@ -24,9 +25,16 @@ export default async function RoundDetailPage({ params }: { params: Promise<{ ro
     data: { user },
   } = await supabase.auth.getUser()
 
-  const { data: participants } = await supabase
+  // Roster names resolve via the admin client (service role), selecting ONLY
+  // full_name — never email. The viewer is already authorized by the RLS round
+  // fetch above (notFound otherwise), so this doesn't widen who can see the
+  // roster; it just stops emails from being readable. It also lets us drop the
+  // broad open-round profiles SELECT policy (see supabase/security-hardening.sql)
+  // that otherwise exposed a registered participant's email to anonymous guests.
+  const admin = createAdminClient()
+  const { data: participants } = await admin
     .from('round_participants')
-    .select('user_id, profiles(full_name, email)')
+    .select('user_id, profiles(full_name)')
     .eq('round_id', roundId)
 
   const isCreator = round.created_by === user?.id
@@ -36,7 +44,7 @@ export default async function RoundDetailPage({ params }: { params: Promise<{ ro
   // is many-to-one at runtime (same reasoning as the team members page).
   const typedParticipants = (participants ?? []) as unknown as {
     user_id: string
-    profiles: { full_name: string | null; email: string | null }
+    profiles: { full_name: string | null }
   }[]
 
   if (round.status === 'collecting') {
@@ -45,7 +53,7 @@ export default async function RoundDetailPage({ params }: { params: Promise<{ ro
     const protocol = headersList.get('x-forwarded-proto') ?? (host.startsWith('localhost') ? 'http' : 'https')
     const joinUrl = `${protocol}://${host}/rounds/${roundId}/join`
 
-    const names = typedParticipants.map((p) => p.profiles.full_name ?? p.profiles.email ?? 'Ẩn danh')
+    const names = typedParticipants.map((p) => p.profiles.full_name ?? 'Ẩn danh')
 
     return (
       <CollectingPanel
@@ -71,7 +79,6 @@ export default async function RoundDetailPage({ params }: { params: Promise<{ ro
     .map((p) => ({
       userId: p.user_id,
       fullName: p.profiles.full_name,
-      email: p.profiles.email,
       reviewed: reviewedTargetIds.has(p.user_id),
     }))
 

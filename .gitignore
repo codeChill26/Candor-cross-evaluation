@@ -13,6 +13,10 @@
 # testing
 /coverage
 
+# Playwright MCP browser-automation artifacts (console logs + page snapshots)
+.playwright-mcp/
+*-verify.png
+
 # next.js
 /.next/
 /out/

@@ -2,6 +2,8 @@
 
 import { revalidatePath } from 'next/cache'
 import { createClient } from '@/lib/supabase/server'
+import { dbError } from '@/lib/utils/action-error'
+import { MIN_PARTICIPANTS } from '@/lib/rounds/constants'
 
 type StartRoundResult = { error: string } | { data: true }
 
@@ -33,13 +35,13 @@ export async function startRound(roundId: string): Promise<StartRoundResult> {
     .from('round_participants')
     .select('id', { count: 'exact', head: true })
     .eq('round_id', roundId)
-  if ((count ?? 0) < 2) {
-    return { error: 'Cần ít nhất 2 người tham gia để bắt đầu' }
+  if ((count ?? 0) < MIN_PARTICIPANTS) {
+    return { error: `Cần ít nhất ${MIN_PARTICIPANTS} người tham gia để đảm bảo ẩn danh` }
   }
 
   const { error } = await supabase.from('rounds').update({ status: 'open' }).eq('id', roundId)
   if (error) {
-    return { error: error.message }
+    return dbError('startRound', error)
   }
 
   revalidatePath(`/rounds/${roundId}`)

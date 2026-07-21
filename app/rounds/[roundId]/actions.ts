@@ -2,6 +2,7 @@
 
 import { revalidatePath } from 'next/cache'
 import { createClient } from '@/lib/supabase/server'
+import { dbError } from '@/lib/utils/action-error'
 
 type CloseRoundResult = { error: string } | { data: true }
 
@@ -24,7 +25,7 @@ export async function closeRound(roundId: string): Promise<CloseRoundResult> {
 
   const { error } = await supabase.from('rounds').update({ status: 'closed' }).eq('id', roundId)
   if (error) {
-    return { error: error.message }
+    return dbError('closeRound', error)
   }
 
   revalidatePath(`/rounds/${roundId}`)
