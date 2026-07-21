@@ -236,3 +236,55 @@ export async function deleteTeam(teamId: string): Promise<DeleteTeamResult> {
   revalidatePath('/teams')
   return { data: true }
 }
+
+type RemoveMemberResult = { error: string } | { data: true }
+
+// Owner removes a member from the team. Owners can't be removed this way
+// (the owner leaves by deleting the team). Admin client + code-enforced owner
+// check, same pattern as deleteTeam.
+export async function removeMember(teamId: string, memberUserId: string): Promise<RemoveMemberResult> {
+  const supabase = await createClient()
+  const {
+    data: { user },
+  } = await supabase.auth.getUser()
+  if (!user) {
+    return { error: 'Không xác thực được người dùng' }
+  }
+
+  const admin = createAdminClient()
+
+  const { data: me } = await admin
+    .from('team_members')
+    .select('role')
+    .eq('team_id', teamId)
+    .eq('user_id', user.id)
+    .maybeSingle()
+  if (me?.role !== 'owner') {
+    return { error: 'Chỉ chủ team mới có thể xóa thành viên' }
+  }
+
+  const { data: target } = await admin
+    .from('team_members')
+    .select('role')
+    .eq('team_id', teamId)
+    .eq('user_id', memberUserId)
+    .maybeSingle()
+  if (!target) {
+    return { error: 'Không tìm thấy thành viên' }
+  }
+  if (target.role === 'owner') {
+    return { error: 'Không thể xóa chủ team' }
+  }
+
+  const { error } = await admin
+    .from('team_members')
+    .delete()
+    .eq('team_id', teamId)
+    .eq('user_id', memberUserId)
+  if (error) {
+    return { error: error.message }
+  }
+
+  revalidatePath(`/teams/${teamId}`)
+  return { data: true }
+}

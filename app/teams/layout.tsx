@@ -1,8 +1,7 @@
-import Link from 'next/link'
 import { redirect } from 'next/navigation'
 import { createClient } from '@/lib/supabase/server'
-import { Button } from '@/components/ui/button'
 import { PageShell } from '@/components/layout/page-shell'
+import { UserMenu } from '@/components/layout/user-menu'
 
 export default async function TeamsLayout({ children }: { children: React.ReactNode }) {
   const supabase = await createClient()
@@ -12,12 +11,15 @@ export default async function TeamsLayout({ children }: { children: React.ReactN
 
   if (!user) redirect('/login')
 
-  async function signOut() {
-    'use server'
-    const supabase = await createClient()
-    await supabase.auth.signOut()
-    redirect('/login')
-  }
+  // Force a display name before entering the app — accounts created without one
+  // (some OAuth cases) get sent to /welcome to pick one.
+  const { data: profile } = await supabase
+    .from('profiles')
+    .select('full_name')
+    .eq('id', user.id)
+    .maybeSingle()
+  const displayName = profile?.full_name?.trim()
+  if (!displayName) redirect('/welcome')
 
   return (
     <PageShell
@@ -25,13 +27,7 @@ export default async function TeamsLayout({ children }: { children: React.ReactN
       description="Tạo team, mời thành viên và theo dõi các vòng đánh giá trong một workspace thống nhất."
       eyebrow="Team console"
       homeHref="/"
-      actions={
-        <form action={signOut}>
-          <Button type="submit" variant="ghost" size="sm">
-            Đăng xuất
-          </Button>
-        </form>
-      }
+      actions={<UserMenu name={displayName} email={user.email ?? ''} />}
     >
       <div className="animate-fade-up">{children}</div>
     </PageShell>

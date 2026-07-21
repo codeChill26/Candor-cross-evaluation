@@ -19,6 +19,17 @@ export default async function RoundsPage({ params }: { params: Promise<{ teamId:
     .select('id', { count: 'exact', head: true })
     .eq('team_id', teamId)
 
+  const {
+    data: { user },
+  } = await supabase.auth.getUser()
+  const { data: myMembership } = await supabase
+    .from('team_members')
+    .select('role')
+    .eq('team_id', teamId)
+    .eq('user_id', user?.id ?? '')
+    .maybeSingle()
+  const isOwner = myMembership?.role === 'owner'
+
   const roundsWithProgress = await Promise.all(
     (rounds ?? []).map(async (round) => ({
       round,
@@ -30,9 +41,11 @@ export default async function RoundsPage({ params }: { params: Promise<{ teamId:
     <div className="space-y-6">
       <div className="flex items-center justify-between">
         <h1 className="text-2xl font-semibold">Vòng đánh giá</h1>
-        <Link href={`/teams/${teamId}/rounds/new`}>
-          <Button>Tạo vòng mới</Button>
-        </Link>
+        {isOwner && (
+          <Link href={`/teams/${teamId}/rounds/new`}>
+            <Button>Tạo vòng mới</Button>
+          </Link>
+        )}
       </div>
       {roundsWithProgress.length > 0 ? (
         <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">

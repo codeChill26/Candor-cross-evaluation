@@ -4,6 +4,7 @@ import { createClient } from '@/lib/supabase/server'
 import { MembersTable, type Member } from '@/components/teams/members-table'
 import { InviteDialog } from '@/components/teams/invite-dialog'
 import { DeleteTeamDialog } from '@/components/teams/delete-team-dialog'
+import { TeamMembersLive } from '@/components/teams/team-members-live'
 import { Button } from '@/components/ui/button'
 
 export default async function TeamDetailPage({
@@ -30,6 +31,7 @@ export default async function TeamDetailPage({
 
   return (
     <div className="space-y-6">
+      <TeamMembersLive teamId={team.id} />
       <div className="flex items-center justify-between">
         <h1 className="text-2xl font-semibold">{team.name}</h1>
         <div className="flex gap-2">
@@ -43,7 +45,12 @@ export default async function TeamDetailPage({
       {/* Cast: without generated Database types, supabase-js can't infer that
           team_members.user_id -> profiles.id is many-to-one, so it types the
           embedded `profiles` as an array even though the FK guarantees one row. */}
-      <MembersTable members={(members ?? []) as unknown as Member[]} />
+      <MembersTable
+        members={(members ?? []) as unknown as Member[]}
+        teamId={team.id}
+        currentUserId={user?.id}
+        isOwner={isOwner}
+      />
     </div>
   )
 }

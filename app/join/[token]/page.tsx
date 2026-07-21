@@ -2,7 +2,7 @@ import { redirect } from 'next/navigation'
 import { createAdminClient } from '@/lib/supabase/admin'
 import { createClient } from '@/lib/supabase/server'
 import { isInviteExpired } from '@/lib/utils/invite-token'
-import { JoinConfirm } from '@/components/teams/join-confirm'
+import { AutoAcceptInvite } from '@/components/teams/auto-accept-invite'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 
 export default async function JoinPage({ params }: { params: Promise<{ token: string }> }) {
@@ -39,7 +39,7 @@ export default async function JoinPage({ params }: { params: Promise<{ token: st
   // embedded `teams` as an array even though the FK guarantees one row.
   const teamName = (invite.teams as unknown as { name: string }).name
 
-  return <JoinConfirm teamName={teamName} token={token} />
+  return <AutoAcceptInvite teamName={teamName} token={token} />
 }
 
 function InvalidInvite({ message }: { message: string }) {

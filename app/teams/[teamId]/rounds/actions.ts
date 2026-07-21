@@ -22,7 +22,7 @@ export async function createRound(teamId: string, input: CreateRoundInput): Prom
 
   const { data: members, error: membersError } = await supabase
     .from('team_members')
-    .select('user_id')
+    .select('user_id, role')
     .eq('team_id', teamId)
 
   if (membersError) {
@@ -30,6 +30,9 @@ export async function createRound(teamId: string, input: CreateRoundInput): Prom
   }
   if (!members || members.length < 2) {
     return { error: 'Team cần ít nhất 2 thành viên để tạo vòng đánh giá' }
+  }
+  if (!members.some((m) => m.user_id === user.id && m.role === 'owner')) {
+    return { error: 'Chỉ chủ team mới có thể tạo vòng đánh giá' }
   }
 
   const { data: round, error: roundError } = await supabase
