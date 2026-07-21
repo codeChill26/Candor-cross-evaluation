@@ -1,0 +1,28 @@
+- generic [active] [ref=f1e1]:
+  - generic [ref=f1e3]:
+    - banner [ref=f1e4]:
+      - generic [ref=f1e5]:
+        - img "Candor" [ref=f1e6]
+        - generic [ref=f1e7]:
+          - paragraph [ref=f1e8]: Team console
+          - heading "Không gian đội nhóm" [level=1] [ref=f1e9]
+          - paragraph [ref=f1e10]: Tạo team, mời thành viên và theo dõi các vòng đánh giá trong một workspace thống nhất.
+      - generic [ref=f1e11]:
+        - button "Trở lại" [ref=f1e12]
+        - link "Trang chủ" [ref=f1e13] [cursor=pointer]:
+          - /url: /
+        - generic [ref=f1e15]:
+          - generic "owner-1784567950@example.com" [ref=f1e16]:
+            - generic [ref=f1e17]: C
+            - generic [ref=f1e18]: Ch? Team
+          - button "Đăng xuất" [ref=f1e20]
+    - main [ref=f1e21]:
+      - generic [ref=f1e63]:
+        - generic [ref=f1e64]:
+          - heading "Vòng đánh giá" [level=1] [ref=f1e65]
+          - link [ref=f1e66] [cursor=pointer]:
+            - /url: /teams/2c4aaeb0-6eb8-4974-8971-1c9aed55bb64/rounds/new
+            - button "Tạo vòng mới" [ref=f1e67]
+        - paragraph [ref=f1e68]: Chưa có vòng đánh giá nào. Tạo vòng đầu tiên.
+  - button "Open Next.js Dev Tools" [ref=f1e58] [cursor=pointer]
+  - alert [ref=f1e62]

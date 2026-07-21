@@ -1,0 +1,45 @@
+- generic [active] [ref=f3e1]:
+  - generic [ref=f3e3]:
+    - banner [ref=f3e4]:
+      - generic [ref=f3e5]:
+        - img "Candor" [ref=f3e6]
+        - generic [ref=f3e7]:
+          - paragraph [ref=f3e8]: Team console
+          - heading "Không gian đội nhóm" [level=1] [ref=f3e9]
+          - paragraph [ref=f3e10]: Tạo team, mời thành viên và theo dõi các vòng đánh giá trong một workspace thống nhất.
+      - generic [ref=f3e11]:
+        - button "Trở lại" [ref=f3e12]
+        - link "Trang chủ" [ref=f3e13] [cursor=pointer]:
+          - /url: /
+        - button "Alice Owner" [ref=f3e15]:
+          - generic [ref=f3e16]: A
+    - main [ref=f3e18]:
+      - generic [ref=f3e20]:
+        - generic [ref=f3e21]:
+          - heading "Test Team RT" [level=1] [ref=f3e22]
+          - generic [ref=f3e23]:
+            - link [ref=f3e24] [cursor=pointer]:
+              - /url: /teams/55365688-aa5a-4a8d-9770-5c2f243fdf5a/rounds
+              - button "Vòng đánh giá" [ref=f3e25]
+            - button "Mời thành viên" [ref=f3e26]
+            - button "Xóa team" [ref=f3e27]
+        - table [ref=f3e29]:
+          - rowgroup [ref=f3e30]:
+            - row [ref=f3e31]:
+              - columnheader "Thành viên" [ref=f3e32]
+              - columnheader "Email" [ref=f3e33]
+              - columnheader "Vai trò" [ref=f3e34]
+              - columnheader "Hành động" [ref=f3e35]
+          - rowgroup [ref=f3e36]:
+            - row [ref=f3e37]:
+              - cell "Alice Owner(Bạn)" [ref=f3e38]
+              - cell "rtowner-1784604665@example.com" [ref=f3e39]
+              - cell "Chủ team" [ref=f3e40]
+              - cell [ref=f3e42]
+            - row [ref=f3e43]:
+              - cell "Bob Member" [ref=f3e44]
+              - cell "rtmember-1784604665@example.com" [ref=f3e45]
+              - cell "Thành viên" [ref=f3e46]
+              - cell [ref=f3e48]:
+                - button "Xóa" [ref=f3e49]
+  - button "Open Next.js Dev Tools" [ref=f3e55] [cursor=pointer]

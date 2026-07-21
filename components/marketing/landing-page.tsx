@@ -1,3 +1,4 @@
+import Image from 'next/image'
 import Link from 'next/link'
 import { ArrowRight, BadgeCheck, Lock, Sparkles, Users } from 'lucide-react'
 
@@ -57,9 +58,14 @@ export function LandingPage() {
 
       <header className="relative mx-auto flex max-w-7xl items-center justify-between px-4 py-5 sm:px-6 lg:px-8">
         <Link href="/" className="flex items-center gap-3">
-          <span className="flex h-11 w-11 items-center justify-center rounded-2xl bg-primary text-primary-foreground shadow-lg shadow-primary/20">
-            <Sparkles className="size-5" aria-hidden />
-          </span>
+          <Image
+            src="/Logo_Header.png"
+            alt="Candor"
+            width={1536}
+            height={1024}
+            priority
+            className="h-11 w-auto object-contain"
+          />
           <span className="text-base font-semibold tracking-tight sm:text-lg">Candor</span>
         </Link>
 
@@ -212,7 +218,14 @@ export function LandingPage() {
         </section>
       </main>
 
-      <footer className="relative mx-auto max-w-7xl px-4 pb-8 text-center text-sm text-muted-foreground sm:px-6 lg:px-8">
+      <footer className="relative mx-auto flex max-w-7xl flex-col items-center gap-3 px-4 pb-8 text-center text-sm text-muted-foreground sm:px-6 lg:px-8">
+        <Image
+          src="/Logo_Footer.png"
+          alt="Candor"
+          width={1536}
+          height={1024}
+          className="h-12 w-auto object-contain opacity-80"
+        />
         Candor dành cho team muốn nghe thật, nhìn đẹp và đi nhanh.
       </footer>
     </div>

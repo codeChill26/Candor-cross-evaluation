@@ -1,0 +1,47 @@
+- generic [active] [ref=f1e1]:
+  - button "Open Next.js Dev Tools" [ref=f1e103] [cursor=pointer]:
+    - generic [ref=f1e106]:
+      - text: Rendering
+      - generic [ref=f1e107]:
+        - generic [ref=f1e108]: .
+        - generic [ref=f1e109]: .
+        - generic [ref=f1e110]: .
+  - alert [ref=f1e62]: Đăng nhập | Candor
+  - generic [ref=f1e70]:
+    - banner [ref=f1e71]:
+      - generic [ref=f1e72]:
+        - img "Candor" [ref=f1e73]
+        - generic [ref=f1e74]:
+          - paragraph [ref=f1e75]: Candor access
+          - heading "Đăng nhập workspace" [level=1] [ref=f1e76]
+          - paragraph [ref=f1e77]: Truy cập tài khoản để quản lý team và các vòng đánh giá.
+      - generic [ref=f1e78]:
+        - button "Trở lại" [ref=f1e79]
+        - link "Trang chủ" [ref=f1e80] [cursor=pointer]:
+          - /url: /
+    - main [ref=f1e81]:
+      - generic [ref=f1e84]:
+        - generic [ref=f1e85]: Đăng nhập vào Candor
+        - generic [ref=f1e87]:
+          - generic [ref=f1e89]:
+            - group [ref=f1e90]:
+              - generic [ref=f1e91]: Email
+              - textbox "Email" [ref=f1e92]:
+                - /placeholder: ban@congty.com
+                - text: member-1784567950@example.com
+              - alert:
+                - list
+            - group [ref=f1e93]:
+              - generic [ref=f1e94]: Mật khẩu
+              - textbox "Mật khẩu" [ref=f1e95]: Test123456!
+              - alert:
+                - list
+            - button "Đăng nhập" [ref=f1e96]
+            - generic [ref=f1e97]:
+              - separator [ref=f1e98]
+              - generic [ref=f1e99]: hoặc
+            - button "Đăng nhập với Google" [ref=f1e100]
+          - paragraph [ref=f1e101]:
+            - text: Chưa có tài khoản?
+            - link "Đăng ký" [ref=f1e102] [cursor=pointer]:
+              - /url: /register

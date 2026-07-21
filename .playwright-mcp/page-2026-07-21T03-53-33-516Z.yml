@@ -1,0 +1,25 @@
+- generic [active] [ref=f1e1]:
+  - generic [ref=f1e3]:
+    - banner [ref=f1e4]:
+      - generic [ref=f1e5]:
+        - img "Candor" [ref=f1e6]
+        - generic [ref=f1e7]:
+          - paragraph [ref=f1e8]: Open rounds
+          - heading "Vòng đánh giá" [level=1] [ref=f1e9]
+          - paragraph [ref=f1e10]: Khu vực công khai cho người tham gia vòng đánh giá và xem báo cáo cá nhân.
+      - generic [ref=f1e11]:
+        - button "Trở lại" [ref=f1e12]
+        - link "Trang chủ" [ref=f1e13] [cursor=pointer]:
+          - /url: /
+    - main [ref=f1e14]:
+      - generic [ref=f1e16]:
+        - heading "Vong kiem tra loi" [level=1] [ref=f1e17]
+        - paragraph [ref=f1e18]: "Đang chờ người tham gia — chia sẻ link này cho mọi người:"
+        - textbox [ref=f1e19]: http://localhost:3001/rounds/9ab40fec-d0df-4ff3-ba26-af278abea65d/join
+        - generic [ref=f1e20]:
+          - paragraph [ref=f1e21]: "Đã tham gia (2):"
+          - list [ref=f1e22]:
+            - listitem [ref=f1e23]: Test Loi
+            - listitem [ref=f1e24]: Nguoi B
+        - button "Bắt đầu đánh giá" [ref=f1e25]
+  - button "Open Next.js Dev Tools" [ref=f1e31] [cursor=pointer]

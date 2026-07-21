@@ -1,0 +1,48 @@
+- generic [active] [ref=f1e1]:
+  - generic [ref=f1e3]:
+    - banner [ref=f1e4]:
+      - generic [ref=f1e5]:
+        - img "Candor" [ref=f1e6]
+        - generic [ref=f1e7]:
+          - paragraph [ref=f1e8]: Team console
+          - heading "Không gian đội nhóm" [level=1] [ref=f1e9]
+          - paragraph [ref=f1e10]: Tạo team, mời thành viên và theo dõi các vòng đánh giá trong một workspace thống nhất.
+      - generic [ref=f1e11]:
+        - button "Trở lại" [ref=f1e12]
+        - link "Trang chủ" [ref=f1e13] [cursor=pointer]:
+          - /url: /
+        - generic [ref=f1e15]:
+          - generic "owner-1784567950@example.com" [ref=f1e16]:
+            - generic [ref=f1e17]: C
+            - generic [ref=f1e18]: Ch? Team
+          - button "Đăng xuất" [ref=f1e20]
+    - main [ref=f1e21]:
+      - generic [ref=f1e23]:
+        - generic [ref=f1e24]:
+          - heading "Team Ki?m Th?" [level=1] [ref=f1e25]
+          - generic [ref=f1e26]:
+            - link [ref=f1e27] [cursor=pointer]:
+              - /url: /teams/2c4aaeb0-6eb8-4974-8971-1c9aed55bb64/rounds
+              - button "Vòng đánh giá" [ref=f1e28]
+            - button "Mời thành viên" [ref=f1e29]
+            - button "Xóa team" [ref=f1e30]
+        - table [ref=f1e32]:
+          - rowgroup [ref=f1e33]:
+            - row [ref=f1e34]:
+              - columnheader "Thành viên" [ref=f1e35]
+              - columnheader "Email" [ref=f1e36]
+              - columnheader "Vai trò" [ref=f1e37]
+              - columnheader "Hành động" [ref=f1e38]
+          - rowgroup [ref=f1e39]:
+            - row [ref=f1e40]:
+              - cell "Ch? Team(Bạn)" [ref=f1e41]
+              - cell "owner-1784567950@example.com" [ref=f1e42]
+              - cell "Chủ team" [ref=f1e43]
+              - cell [ref=f1e45]
+            - row [ref=f1e46]:
+              - cell "Th�nh Vi�n B" [ref=f1e47]
+              - cell "member-1784567950@example.com" [ref=f1e48]
+              - cell "Thành viên" [ref=f1e49]
+              - cell [ref=f1e51]:
+                - button "Xóa" [ref=f1e52]
+  - button "Open Next.js Dev Tools" [ref=f1e58] [cursor=pointer]

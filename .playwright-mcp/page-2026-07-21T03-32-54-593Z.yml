@@ -1,0 +1,47 @@
+- generic [ref=f2e1]:
+  - generic [ref=f2e3]:
+    - banner [ref=f2e4]:
+      - generic [ref=f2e5]:
+        - img "Candor" [ref=f2e6]
+        - generic [ref=f2e7]:
+          - paragraph [ref=f2e8]: Team console
+          - heading "Không gian đội nhóm" [level=1] [ref=f2e9]
+          - paragraph [ref=f2e10]: Tạo team, mời thành viên và theo dõi các vòng đánh giá trong một workspace thống nhất.
+      - generic [ref=f2e11]:
+        - button "Trở lại" [ref=f2e12]
+        - link "Trang chủ" [ref=f2e13] [cursor=pointer]:
+          - /url: /
+        - generic [ref=f2e14]:
+          - button "Alice Owner" [expanded] [ref=f2e15]:
+            - generic [ref=f2e16]: A
+          - menu "Alice Owner" [active] [ref=f2e57]:
+            - generic [ref=f2e58]:
+              - paragraph [ref=f2e59]: Alice Owner
+              - paragraph [ref=f2e60]: rtowner-1784604665@example.com
+            - separator [ref=f2e61]
+            - menuitem "Đăng xuất" [ref=f2e62]
+    - main [ref=f2e18]:
+      - generic [ref=f2e20]:
+        - generic [ref=f2e21]:
+          - heading "Test Team RT" [level=1] [ref=f2e22]
+          - generic [ref=f2e23]:
+            - link [ref=f2e24] [cursor=pointer]:
+              - /url: /teams/55365688-aa5a-4a8d-9770-5c2f243fdf5a/rounds
+              - button "Vòng đánh giá" [ref=f2e25]
+            - button "Mời thành viên" [ref=f2e26]
+            - button "Xóa team" [ref=f2e27]
+        - table [ref=f2e29]:
+          - rowgroup [ref=f2e30]:
+            - row [ref=f2e31]:
+              - columnheader "Thành viên" [ref=f2e32]
+              - columnheader "Email" [ref=f2e33]
+              - columnheader "Vai trò" [ref=f2e34]
+              - columnheader "Hành động" [ref=f2e35]
+          - rowgroup [ref=f2e36]:
+            - row [ref=f2e37]:
+              - cell "Alice Owner(Bạn)" [ref=f2e38]
+              - cell "rtowner-1784604665@example.com" [ref=f2e39]
+              - cell "Chủ team" [ref=f2e40]
+              - cell [ref=f2e42]
+  - button "Open Next.js Dev Tools" [ref=f2e48] [cursor=pointer]
+  - alert [ref=f2e52]

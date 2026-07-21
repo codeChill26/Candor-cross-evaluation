@@ -1,0 +1,22 @@
+- generic [active] [ref=e1]:
+  - generic [ref=e3]:
+    - banner [ref=e4]:
+      - generic [ref=e5]:
+        - img "Candor" [ref=e6]
+        - generic [ref=e7]:
+          - paragraph [ref=e8]: Open rounds
+          - heading "Vòng đánh giá" [level=1] [ref=e9]
+          - paragraph [ref=e10]: Khu vực công khai cho người tham gia vòng đánh giá và xem báo cáo cá nhân.
+      - generic [ref=e11]:
+        - button "Trở lại" [ref=e12]
+        - link "Trang chủ" [ref=e13] [cursor=pointer]:
+          - /url: /
+    - main [ref=e14]:
+      - generic [ref=e16]:
+        - heading "Vong kiem tra loi" [level=1] [ref=e17]
+        - generic [ref=e18]:
+          - group [ref=e20]:
+            - generic [ref=e21]: Diem manh?
+            - textbox "Nhập câu trả lời..." [ref=e22]
+          - button "Nộp đánh giá" [ref=e23]
+  - button "Open Next.js Dev Tools" [ref=e29] [cursor=pointer]

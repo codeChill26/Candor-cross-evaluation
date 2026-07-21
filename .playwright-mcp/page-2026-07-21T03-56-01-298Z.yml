@@ -1,0 +1,22 @@
+- generic [active] [ref=e1]:
+  - generic [ref=e3]:
+    - banner [ref=e4]:
+      - generic [ref=e5]:
+        - img "Candor" [ref=e6]
+        - generic [ref=e7]:
+          - paragraph [ref=e8]: Open rounds
+          - heading "Vòng đánh giá" [level=1] [ref=e9]
+          - paragraph [ref=e10]: Khu vực công khai cho người tham gia vòng đánh giá và xem báo cáo cá nhân.
+      - generic [ref=e11]:
+        - button "Trở lại" [ref=e12]
+        - link "Trang chủ" [ref=e13] [cursor=pointer]:
+          - /url: /
+    - main [ref=e14]:
+      - generic [ref=e56]:
+        - 'heading "Báo cáo: Vong kiem tra loi" [level=1] [ref=e57]'
+        - paragraph [ref=e58]: Team này có ít hơn 4 thành viên — với nhóm nhỏ, danh tính người đánh giá có thể bị suy đoán qua văn phong hoặc loại trừ, dù hệ thống không lưu bất kỳ liên kết kỹ thuật nào tới người viết.
+        - generic [ref=e60]:
+          - paragraph [ref=e61]: Diem manh?
+          - paragraph [ref=e63]: Chưa có phản hồi nào.
+  - button "Open Next.js Dev Tools" [ref=e29] [cursor=pointer]
+  - alert [ref=e33]

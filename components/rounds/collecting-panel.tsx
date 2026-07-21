@@ -1,9 +1,10 @@
 'use client'
 
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { useRouter } from 'next/navigation'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
+import { createClient } from '@/lib/supabase/client'
 import { startRound } from '@/app/rounds/[roundId]/start-actions'
 
 export function CollectingPanel({
@@ -22,6 +23,36 @@ export function CollectingPanel({
   const router = useRouter()
   const [error, setError] = useState<string | null>(null)
   const [pending, setPending] = useState(false)
+
+  // Live waiting room. Subscribing runs in the browser (a serverless function
+  // can't hold the socket). On any change we just re-run the server component
+  // via router.refresh() — it re-fetches the roster with display names under
+  // RLS, so we don't duplicate that query here.
+  //   - round_participants INSERT → a new person joined, refresh the list.
+  //   - rounds UPDATE → the creator hit "Bắt đầu" (status → open), so every
+  //     waiting participant auto-advances to the review screen.
+  // Requires the two tables to be in the `supabase_realtime` publication
+  // (see supabase/realtime-setup.sql).
+  useEffect(() => {
+    const supabase = createClient()
+    const channel = supabase
+      .channel(`round-collecting-${roundId}`)
+      .on(
+        'postgres_changes',
+        { event: 'INSERT', schema: 'public', table: 'round_participants', filter: `round_id=eq.${roundId}` },
+        () => router.refresh()
+      )
+      .on(
+        'postgres_changes',
+        { event: 'UPDATE', schema: 'public', table: 'rounds', filter: `id=eq.${roundId}` },
+        () => router.refresh()
+      )
+      .subscribe()
+
+    return () => {
+      supabase.removeChannel(channel)
+    }
+  }, [roundId, router])
 
   async function handleStart() {
     setPending(true)

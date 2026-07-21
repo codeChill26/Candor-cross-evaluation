@@ -1,0 +1,67 @@
+- generic [active] [ref=e1]:
+  - generic [ref=e3]:
+    - banner [ref=e4]:
+      - generic [ref=e5]:
+        - img "Candor" [ref=e6]
+        - generic [ref=e7]:
+          - paragraph [ref=e8]: Open rounds
+          - heading "Vòng đánh giá" [level=1] [ref=e9]
+          - paragraph [ref=e10]: Khu vực công khai cho người tham gia vòng đánh giá và xem báo cáo cá nhân.
+      - generic [ref=e11]:
+        - button "Trở lại" [ref=e12]
+        - link "Trang chủ" [ref=e13] [cursor=pointer]:
+          - /url: /
+    - main [ref=e14]:
+      - generic [ref=e16]:
+        - generic [ref=e17]:
+          - heading "Tạo đánh giá nhanh" [level=1] [ref=e18]
+          - paragraph [ref=e19]: Không cần tài khoản. Bạn cũng sẽ tham gia đánh giá cùng mọi người bạn mời.
+        - generic [ref=e20]:
+          - generic [ref=e21]:
+            - group [ref=e22]:
+              - generic [ref=e23]: Tên hiển thị của bạn
+              - textbox "Tên hiển thị của bạn" [ref=e24]:
+                - /placeholder: Nguyễn Văn A
+              - alert:
+                - list
+            - group [ref=e25]:
+              - generic [ref=e26]: Tên vòng đánh giá
+              - textbox "Tên vòng đánh giá" [ref=e27]:
+                - /placeholder: "VD: Đánh giá dự án nhóm"
+              - alert:
+                - list
+            - group [ref=e28]:
+              - generic [ref=e29]: Deadline
+              - textbox "Deadline" [ref=e30]
+              - alert:
+                - list
+          - generic [ref=e31]:
+            - generic [ref=e32]: Câu hỏi
+            - generic [ref=e33]:
+              - generic [ref=e34]:
+                - generic [ref=e35]: Câu 1 — 📝 Đoạn văn
+                - generic [ref=e36]:
+                  - button "Di chuyển lên" [disabled]: ↑
+                  - button "Di chuyển xuống" [disabled]: ↓
+                  - button "Xóa" [ref=e37]
+              - group [ref=e38]:
+                - textbox "Nội dung câu hỏi" [ref=e39]
+                - alert:
+                  - list
+              - generic [ref=e40]:
+                - checkbox "Bắt buộc trả lời" [ref=e41]
+                - text: Bắt buộc trả lời
+            - generic [ref=e42]:
+              - combobox "Loại câu hỏi" [ref=e43]:
+                - option "📝 Đoạn văn" [selected]
+                - option "✏️ Trả lời ngắn"
+                - option "⭐ Chấm điểm 1–5"
+                - option "☑️ Checkbox (chọn nhiều)"
+                - option "🔘 Trắc nghiệm"
+                - option "📋 Dropdown"
+                - option "🎯 NPS 0–10"
+              - button "+ Thêm câu hỏi" [ref=e44]
+            - alert:
+              - list
+          - button "Tạo vòng đánh giá" [ref=e45]
+  - button "Open Next.js Dev Tools" [ref=e51] [cursor=pointer]

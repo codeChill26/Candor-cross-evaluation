@@ -1,0 +1,37 @@
+- generic [ref=e3]:
+  - banner [ref=e4]:
+    - generic [ref=e5]:
+      - img "Candor" [ref=e6]
+      - generic [ref=e7]:
+        - paragraph [ref=e8]: Candor access
+        - heading "Đăng nhập workspace" [level=1] [ref=e9]
+        - paragraph [ref=e10]: Truy cập tài khoản để quản lý team và các vòng đánh giá.
+    - generic [ref=e11]:
+      - button "Trở lại" [ref=e12]
+      - link "Trang chủ" [ref=e13] [cursor=pointer]:
+        - /url: /
+  - main [ref=e14]:
+    - generic [ref=e17]:
+      - generic [ref=e18]: Đăng nhập vào Candor
+      - generic [ref=e20]:
+        - generic [ref=e22]:
+          - group [ref=e23]:
+            - generic [ref=e24]: Email
+            - textbox "Email" [ref=e25]:
+              - /placeholder: ban@congty.com
+            - alert:
+              - list
+          - group [ref=e26]:
+            - generic [ref=e27]: Mật khẩu
+            - textbox "Mật khẩu" [ref=e28]
+            - alert:
+              - list
+          - button "Đăng nhập" [ref=e29]
+          - generic [ref=e30]:
+            - separator [ref=e31]
+            - generic [ref=e32]: hoặc
+          - button "Đăng nhập với Google" [ref=e33]
+        - paragraph [ref=e34]:
+          - text: Chưa có tài khoản?
+          - link "Đăng ký" [ref=e35] [cursor=pointer]:
+            - /url: /register

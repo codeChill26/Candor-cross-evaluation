@@ -1,0 +1,57 @@
+- generic [active] [ref=f5e1]:
+  - generic [ref=f5e3]:
+    - banner [ref=f5e4]:
+      - generic [ref=f5e5]:
+        - img "Candor" [ref=f5e6]
+        - generic [ref=f5e7]:
+          - paragraph [ref=f5e8]: Team console
+          - heading "Không gian đội nhóm" [level=1] [ref=f5e9]
+          - paragraph [ref=f5e10]: Tạo team, mời thành viên và theo dõi các vòng đánh giá trong một workspace thống nhất.
+      - generic [ref=f5e11]:
+        - button "Trở lại" [ref=f5e12]
+        - link "Trang chủ" [ref=f5e13] [cursor=pointer]:
+          - /url: /
+        - button "Alice Owner" [ref=f5e15]:
+          - generic [ref=f5e16]: A
+    - main [ref=f5e18]:
+      - generic [ref=f5e20]:
+        - generic [ref=f5e21]:
+          - heading "Test Team RT" [level=1] [ref=f5e22]
+          - generic [ref=f5e23]:
+            - link [ref=f5e24] [cursor=pointer]:
+              - /url: /teams/55365688-aa5a-4a8d-9770-5c2f243fdf5a/rounds
+              - button "Vòng đánh giá" [ref=f5e25]
+            - button "Mời thành viên" [ref=f5e26]
+            - button "Xóa team" [ref=f5e27]
+        - table [ref=f5e29]:
+          - rowgroup [ref=f5e30]:
+            - row [ref=f5e31]:
+              - columnheader "Thành viên" [ref=f5e32]
+              - columnheader "Email" [ref=f5e33]
+              - columnheader "Vai trò" [ref=f5e34]
+              - columnheader "Hành động" [ref=f5e35]
+          - rowgroup [ref=f5e36]:
+            - row [ref=f5e37]:
+              - cell "Alice Owner(Bạn)" [ref=f5e38]
+              - cell "rtowner-1784604665@example.com" [ref=f5e39]
+              - cell "Chủ team" [ref=f5e40]
+              - cell [ref=f5e42]
+            - row [ref=f5e43]:
+              - cell "Bob Member" [ref=f5e44]
+              - cell "rtmember-1784604665@example.com" [ref=f5e45]
+              - cell "Thành viên" [ref=f5e46]
+              - cell [ref=f5e48]:
+                - button "Xóa" [ref=f5e49]
+            - row [ref=f5e50]:
+              - cell "Carol Live" [ref=f5e51]
+              - cell "rtcarol-1784604952@example.com" [ref=f5e52]
+              - cell "Thành viên" [ref=f5e53]
+              - cell [ref=f5e55]:
+                - button "Xóa" [ref=f5e56]
+            - row [ref=f5e57]:
+              - cell "Dave Live" [ref=f5e58]
+              - cell "rtdave-1784605080@example.com" [ref=f5e59]
+              - cell "Thành viên" [ref=f5e60]
+              - cell [ref=f5e62]:
+                - button "Xóa" [ref=f5e63]
+  - button "Open Next.js Dev Tools" [ref=f5e69] [cursor=pointer]

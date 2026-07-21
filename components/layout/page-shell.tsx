@@ -1,9 +1,10 @@
 'use client'
 
+import Image from 'next/image'
 import Link from 'next/link'
 import { useRouter } from 'next/navigation'
 import type { ReactNode } from 'react'
-import { ArrowLeft, CircleDot, Home } from 'lucide-react'
+import { ArrowLeft, Home } from 'lucide-react'
 
 import { buttonVariants } from '@/components/ui/button'
 import { cn } from '@/lib/utils'
@@ -49,9 +50,14 @@ export function PageShell({
       <div className="relative mx-auto flex min-h-screen w-full max-w-7xl flex-col px-4 py-4 sm:px-6 lg:px-8">
         <header className="glass-shell sticky top-4 z-20 mb-6 flex flex-col gap-4 rounded-3xl px-4 py-4 backdrop-blur-xl sm:flex-row sm:items-center sm:justify-between">
           <div className="flex min-w-0 flex-1 items-start gap-3">
-            <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-2xl bg-primary text-primary-foreground shadow-lg shadow-primary/20">
-              <CircleDot className="size-5" aria-hidden />
-            </div>
+            <Image
+              src="/Logo_Header.png"
+              alt="Candor"
+              width={1536}
+              height={1024}
+              priority
+              className="h-11 w-auto shrink-0 object-contain"
+            />
             <div className="min-w-0 space-y-1">
               {eyebrow ? (
                 <p className="font-mono text-[11px] tracking-[0.32em] text-primary uppercase">
