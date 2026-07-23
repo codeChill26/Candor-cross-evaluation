@@ -15,6 +15,8 @@ import { Field, FieldGroup, FieldLabel, FieldError } from '@/components/ui/field
 import {
   QUESTION_TYPES,
   CHOICE_TYPES,
+  OTHER_CAPABLE_TYPES,
+  OTHER_OPTION,
   type QuestionType,
   type CreateRoundInput,
   type RoundQuestionInput,
@@ -86,7 +88,13 @@ export function QuestionBuilder({ control, register, setValue, errors }: Props) 
             </Field>
 
             {CHOICE_TYPES.includes(type) && (
-              <ChoiceOptions control={control} setValue={setValue} errors={errors} index={index} />
+              <ChoiceOptions
+                control={control}
+                setValue={setValue}
+                errors={errors}
+                index={index}
+                type={type}
+              />
             )}
 
             <label className="flex w-fit items-center gap-2 text-sm text-muted-foreground">
@@ -130,14 +138,24 @@ function ChoiceOptions({
   setValue,
   errors,
   index,
+  type,
 }: {
   control: Control<CreateRoundInput>
   setValue: UseFormSetValue<CreateRoundInput>
   errors: FieldErrors<CreateRoundInput>
   index: number
+  type: QuestionType
 }) {
   const name = `questions.${index}.options` as `questions.0.options`
-  const options = (useWatch({ control, name }) as string[] | undefined) ?? []
+  const all = (useWatch({ control, name }) as string[] | undefined) ?? []
+  // The "Khác" sentinel lives in the same array but is never an editable row —
+  // it's kept last so the visible option indexes stay stable.
+  const otherEnabled = all.includes(OTHER_OPTION)
+  const options = all.filter((o) => o !== OTHER_OPTION)
+  const canHaveOther = OTHER_CAPABLE_TYPES.includes(type)
+
+  const write = (next: string[], other: boolean = otherEnabled) =>
+    setValue(name, other ? [...next, OTHER_OPTION] : next)
 
   const rawOptionErrors = (
     errors.questions?.[index] as { options?: { message?: string } | ({ message?: string } | undefined)[] } | undefined
@@ -151,10 +169,10 @@ function ChoiceOptions({
   const updateOption = (i: number, value: string) => {
     const next = [...options]
     next[i] = value
-    setValue(name, next)
+    write(next)
   }
-  const addOption = () => setValue(name, [...options, ''])
-  const removeOption = (i: number) => setValue(name, options.filter((_, idx) => idx !== i))
+  const addOption = () => write([...options, ''])
+  const removeOption = (i: number) => write(options.filter((_, idx) => idx !== i))
 
   return (
     <div className="space-y-2 pl-4">
@@ -186,6 +204,18 @@ function ChoiceOptions({
       >
         + Thêm lựa chọn
       </Button>
+
+      {canHaveOther && (
+        <label className="flex w-fit items-center gap-2 text-sm text-muted-foreground">
+          <input
+            type="checkbox"
+            checked={otherEnabled}
+            onChange={(e) => write(options, e.target.checked)}
+          />
+          Cho phép “Khác” (người trả lời tự điền)
+        </label>
+      )}
+
       <FieldError errors={optionErrors} />
     </div>
   )

@@ -62,9 +62,14 @@ export default async function ReportPage({ params }: { params: Promise<{ roundId
   // Shuffle each free-text question's answers INDEPENDENTLY: a shared order
   // across questions would let someone line up "answer #1 to Q1" with
   // "answer #1 to Q2" and reconstruct a whole reviewer's submission.
-  const summary = aggregateReport(questionsForAggregate, responsesForAggregate).map((r) =>
-    r.type === 'text' ? { ...r, answers: shuffle(r.answers) } : r
-  )
+  const summary = aggregateReport(questionsForAggregate, responsesForAggregate).map((r) => {
+    if (r.type === 'text') return { ...r, answers: shuffle(r.answers) }
+    // Free text typed into "Khác" leaks the same way, so shuffle it too.
+    if (r.type === 'choice' || r.type === 'checkbox') {
+      return { ...r, otherAnswers: shuffle(r.otherAnswers) }
+    }
+    return r
+  })
 
   return (
     <div className="space-y-8">

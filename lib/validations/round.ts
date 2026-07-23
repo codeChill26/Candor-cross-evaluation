@@ -23,6 +23,22 @@ export const QUESTION_TYPES: { value: QuestionType; label: string; emoji: string
 // Types whose builder shows an editable option list.
 export const CHOICE_TYPES: QuestionType[] = ['checkbox', 'multiple_choice', 'dropdown']
 
+// Types that can offer a free-text "Khác" choice (dropdown stays a fixed list).
+export const OTHER_CAPABLE_TYPES: QuestionType[] = ['checkbox', 'multiple_choice']
+
+// Sentinel appended (always last) to a question's options to mean "this question
+// allows a free-text 'Khác' answer". It is NEVER stored as a response value —
+// the respondent's typed text is stored instead. Using a sentinel option rather
+// than a new column keeps this feature migration-free.
+export const OTHER_OPTION = '__other__'
+
+export const allowsOther = (options: string[] | null | undefined): boolean =>
+  (options ?? []).includes(OTHER_OPTION)
+
+// The options a respondent actually sees (sentinel stripped).
+export const visibleOptions = (options: string[] | null | undefined): string[] =>
+  (options ?? []).filter((o) => o !== OTHER_OPTION)
+
 const promptField = z.string().min(1, 'Câu hỏi không được để trống').max(300)
 
 // Trim and drop blank options, THEN count — so the "(tùy chọn)" boxes the UI
@@ -32,8 +48,9 @@ const promptField = z.string().min(1, 'Câu hỏi không được để trống'
 const optionsField = z
   .array(z.string().max(100, 'Lựa chọn tối đa 100 ký tự'))
   .transform((arr) => arr.map((o) => o.trim()).filter((o) => o.length > 0))
-  .refine((arr) => arr.length >= 2, 'Cần ít nhất 2 lựa chọn')
-  .refine((arr) => arr.length <= 10, 'Tối đa 10 lựa chọn')
+  // The "Khác" sentinel isn't a real choice, so it doesn't count toward either bound.
+  .refine((arr) => visibleOptions(arr).length >= 2, 'Cần ít nhất 2 lựa chọn')
+  .refine((arr) => visibleOptions(arr).length <= 10, 'Tối đa 10 lựa chọn')
 
 // Shared across every question type.
 const base = { prompt: promptField, required: z.boolean() }
@@ -93,13 +110,18 @@ export function buildAnswersSchema(questions: AnswerQuestion[]) {
     } else if (q.type === 'nps') {
       field = z.number().int().min(0).max(10)
     } else if (q.type === 'multiple_choice' || q.type === 'dropdown') {
-      const options = q.options ?? []
-      field = z.enum(options as [string, ...string[]])
+      const options = visibleOptions(q.options)
+      // With "Khác" enabled the respondent types their own value, so any
+      // non-empty string is valid — not just the predefined options.
+      field = allowsOther(q.options)
+        ? z.string().min(1, 'Vui lòng chọn hoặc nhập câu trả lời').max(300)
+        : z.enum(options as [string, ...string[]])
     } else if (q.type === 'checkbox') {
-      const options = q.options ?? []
-      field = z
-        .array(z.enum(options as [string, ...string[]]))
-        .min(q.required ? 1 : 0, 'Chọn ít nhất 1 lựa chọn')
+      const options = visibleOptions(q.options)
+      const item = allowsOther(q.options)
+        ? z.string().min(1).max(300)
+        : z.enum(options as [string, ...string[]])
+      field = z.array(item).min(q.required ? 1 : 0, 'Chọn ít nhất 1 lựa chọn')
     } else {
       // paragraph / short_text / legacy text
       field = z.string().min(1, 'Vui lòng nhập câu trả lời').max(2000)

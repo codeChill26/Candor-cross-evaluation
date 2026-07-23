@@ -9,6 +9,22 @@ const optionRows = (counts: OptionCount[], max: number): BarRow[] =>
     caption: `${c.count} (${max > 0 ? Math.round((c.count / max) * 100) : 0}%)`,
   }))
 
+// Free-text answers typed into "Khác". Shuffled upstream (report page) so their
+// order can't be lined up against other questions to rebuild one reviewer's set.
+function OtherAnswers({ answers }: { answers: string[] }) {
+  if (answers.length === 0) return null
+  return (
+    <div className="space-y-2">
+      <p className="text-xs font-medium text-muted-foreground">Nội dung “Khác”:</p>
+      {answers.map((answer, i) => (
+        <div key={i} className="rounded-md border bg-muted/40 p-2 text-sm whitespace-pre-wrap">
+          {answer}
+        </div>
+      ))}
+    </div>
+  )
+}
+
 export function QuestionReport({ result }: { result: AggregateResult }) {
   return (
     <div className="space-y-3 rounded-lg border p-4">
@@ -67,6 +83,7 @@ export function QuestionReport({ result }: { result: AggregateResult }) {
         <>
           <BarChart rows={optionRows(result.counts, result.total)} />
           <p className="text-xs text-muted-foreground">{result.total} người trả lời</p>
+          <OtherAnswers answers={result.otherAnswers} />
         </>
       )}
 
@@ -76,6 +93,7 @@ export function QuestionReport({ result }: { result: AggregateResult }) {
           <p className="text-xs text-muted-foreground">
             {result.respondents} người trả lời (chọn được nhiều)
           </p>
+          <OtherAnswers answers={result.otherAnswers} />
         </>
       )}
 

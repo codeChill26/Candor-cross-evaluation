@@ -5,10 +5,11 @@ import { createClient } from '@/lib/supabase/server'
 import { createAdminClient } from '@/lib/supabase/admin'
 import { getEffectiveStatus } from '@/lib/utils/round-status'
 import { Badge } from '@/components/ui/badge'
-import { Button } from '@/components/ui/button'
 import { TargetList } from '@/components/rounds/target-list'
 import { CollectingPanel } from '@/components/rounds/collecting-panel'
-import { closeRound } from './actions'
+import { CloseRoundPanel } from '@/components/rounds/close-round-panel'
+import { RoundDetailLive } from '@/components/rounds/round-detail-live'
+import { getSubmissionProgress } from '@/lib/rounds/progress'
 
 export default async function RoundDetailPage({ params }: { params: Promise<{ roundId: string }> }) {
   const { roundId } = await params
@@ -83,9 +84,15 @@ export default async function RoundDetailPage({ params }: { params: Promise<{ ro
     }))
 
   const effective = getEffectiveStatus(round.status, round.deadline)
+  // Aggregate counts for the creator's close decision (counts only — see
+  // getSubmissionProgress on why the per-pair map stays server-side).
+  const progress = isCreator && effective === 'open' ? await getSubmissionProgress(roundId) : null
 
   return (
     <div className="space-y-6">
+      {/* Live while the round is open: progress ticks up, and a close flips
+          every participant's page to the report without a reload. */}
+      {effective === 'open' && <RoundDetailLive roundId={roundId} />}
       <div className="flex items-center justify-between">
         <div className="space-y-1">
           <h1 className="text-2xl font-semibold">{round.title}</h1>
@@ -93,19 +100,11 @@ export default async function RoundDetailPage({ params }: { params: Promise<{ ro
             Deadline: {new Date(round.deadline).toLocaleString('vi-VN')}
           </p>
         </div>
-        <div className="flex items-center gap-2">
-          <Badge variant={effective === 'open' ? 'default' : 'secondary'}>
-            {effective === 'open' ? 'Đang mở' : 'Đã đóng'}
-          </Badge>
-          {isCreator && effective === 'open' && (
-            <form action={async () => { 'use server'; await closeRound(roundId) }}>
-              <Button type="submit" variant="outline" size="sm">
-                Đóng vòng
-              </Button>
-            </form>
-          )}
-        </div>
+        <Badge variant={effective === 'open' ? 'default' : 'secondary'}>
+          {effective === 'open' ? 'Đang mở' : 'Đã đóng'}
+        </Badge>
       </div>
+      {progress && <CloseRoundPanel roundId={roundId} progress={progress} />}
       {effective === 'open' ? (
         <TargetList roundId={roundId} targets={targets} />
       ) : (

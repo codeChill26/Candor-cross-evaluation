@@ -6,7 +6,7 @@ import { Button } from '@/components/ui/button'
 import { Field, FieldGroup, FieldLabel } from '@/components/ui/field'
 import { Input } from '@/components/ui/input'
 import { Textarea } from '@/components/ui/textarea'
-import type { QuestionType } from '@/lib/validations/round'
+import { allowsOther, visibleOptions, type QuestionType } from '@/lib/validations/round'
 import { clearDraft, loadDraft, pruneAnswers, saveDraft } from '@/lib/rounds/draft'
 import { submitResponse } from '@/app/rounds/[roundId]/review/[targetId]/actions'
 
@@ -40,6 +40,62 @@ export function ResponseForm({
   const [error, setError] = useState<string | null>(null)
   const [pending, setPending] = useState(false)
   const [confirming, setConfirming] = useState(false)
+
+  // Which "Khác" boxes are ticked. The typed text itself lives in `answers`
+  // (that's what gets submitted), so drafts restore it for free — this state
+  // only tracks the ticked-but-still-empty case. Seeded from the saved draft:
+  // a stored value that isn't one of the predefined options came from "Khác".
+  const [otherMode, setOtherMode] = useState<Record<string, boolean>>(() => {
+    const draft = loadDraft(roundId, targetId) ?? {}
+    const mode: Record<string, boolean> = {}
+    for (const q of questions) {
+      if (!allowsOther(q.options_json)) continue
+      const opts = visibleOptions(q.options_json)
+      const v = draft[q.id]
+      if (typeof v === 'string' ? v !== '' && !opts.includes(v) : Array.isArray(v) && v.some((x) => !opts.includes(x))) {
+        mode[q.id] = true
+      }
+    }
+    return mode
+  })
+
+  // The free-text part of an answer = whatever isn't a predefined option.
+  function otherTextOf(q: Question): string {
+    const opts = visibleOptions(q.options_json)
+    const v = answers[q.id]
+    if (q.type === 'checkbox') {
+      return (Array.isArray(v) ? v : []).find((x) => !opts.includes(x)) ?? ''
+    }
+    return typeof v === 'string' && v !== '' && !opts.includes(v) ? v : ''
+  }
+
+  function toggleOther(q: Question) {
+    const on = !(otherMode[q.id] ?? false)
+    setOtherMode((prev) => ({ ...prev, [q.id]: on }))
+    if (on) return
+    // Unticking drops the free-text entry.
+    const opts = visibleOptions(q.options_json)
+    setAnswers((prev) => {
+      if (q.type === 'checkbox') {
+        const arr = Array.isArray(prev[q.id]) ? (prev[q.id] as string[]) : []
+        return { ...prev, [q.id]: arr.filter((x) => opts.includes(x)) }
+      }
+      return { ...prev, [q.id]: '' }
+    })
+  }
+
+  function setOtherText(q: Question, text: string) {
+    if (q.type !== 'checkbox') {
+      set(q.id, text)
+      return
+    }
+    const opts = visibleOptions(q.options_json)
+    setAnswers((prev) => {
+      const arr = Array.isArray(prev[q.id]) ? (prev[q.id] as string[]) : []
+      const predefined = arr.filter((x) => opts.includes(x))
+      return { ...prev, [q.id]: text ? [...predefined, text] : predefined }
+    })
+  }
 
   // Persist every edit locally (browser only — never the DB) so the reviewer
   // can leave and come back to edit until they finalize.
@@ -92,8 +148,11 @@ export function ResponseForm({
     <form onSubmit={handleSubmit} className="space-y-6">
       <FieldGroup>
         {questions.map((q) => {
-          const options = q.options_json ?? []
+          const options = visibleOptions(q.options_json)
           const value = answers[q.id]
+          const hasOther = allowsOther(q.options_json)
+          const isOther = otherMode[q.id] ?? false
+          const otherText = otherTextOf(q)
           return (
             <Field key={q.id}>
               <FieldLabel>
@@ -150,36 +209,76 @@ export function ResponseForm({
               )}
 
               {q.type === 'multiple_choice' && (
-                <div className="flex flex-wrap gap-2">
-                  {options.map((option) => (
-                    <Button
-                      key={option}
-                      type="button"
-                      variant={value === option ? 'default' : 'outline'}
-                      onClick={() => set(q.id, option)}
-                    >
-                      {option}
-                    </Button>
-                  ))}
+                <div className="space-y-2">
+                  <div className="flex flex-wrap gap-2">
+                    {options.map((option) => (
+                      <Button
+                        key={option}
+                        type="button"
+                        variant={!isOther && value === option ? 'default' : 'outline'}
+                        onClick={() => {
+                          setOtherMode((prev) => ({ ...prev, [q.id]: false }))
+                          set(q.id, option)
+                        }}
+                      >
+                        {option}
+                      </Button>
+                    ))}
+                    {hasOther && (
+                      <Button
+                        type="button"
+                        variant={isOther ? 'default' : 'outline'}
+                        onClick={() => toggleOther(q)}
+                      >
+                        Khác…
+                      </Button>
+                    )}
+                  </div>
+                  {hasOther && isOther && (
+                    <Input
+                      value={otherText}
+                      onChange={(e) => setOtherText(q, e.target.value)}
+                      placeholder="Nhập câu trả lời của bạn..."
+                    />
+                  )}
                 </div>
               )}
 
               {q.type === 'checkbox' && (
-                <div className="flex flex-wrap gap-2">
-                  {options.map((option) => {
-                    const selected = Array.isArray(value) && value.includes(option)
-                    return (
+                <div className="space-y-2">
+                  <div className="flex flex-wrap gap-2">
+                    {options.map((option) => {
+                      const selected = Array.isArray(value) && value.includes(option)
+                      return (
+                        <Button
+                          key={option}
+                          type="button"
+                          variant={selected ? 'default' : 'outline'}
+                          onClick={() => toggleCheckbox(q.id, option)}
+                        >
+                          {selected ? '☑ ' : '☐ '}
+                          {option}
+                        </Button>
+                      )
+                    })}
+                    {hasOther && (
                       <Button
-                        key={option}
                         type="button"
-                        variant={selected ? 'default' : 'outline'}
-                        onClick={() => toggleCheckbox(q.id, option)}
+                        variant={isOther ? 'default' : 'outline'}
+                        onClick={() => toggleOther(q)}
                       >
-                        {selected ? '☑ ' : '☐ '}
-                        {option}
+                        {isOther ? '☑ ' : '☐ '}
+                        Khác…
                       </Button>
-                    )
-                  })}
+                    )}
+                  </div>
+                  {hasOther && isOther && (
+                    <Input
+                      value={otherText}
+                      onChange={(e) => setOtherText(q, e.target.value)}
+                      placeholder="Nhập lựa chọn của bạn..."
+                    />
+                  )}
                 </div>
               )}
 
