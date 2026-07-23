@@ -143,12 +143,82 @@
   .glass-card {
     @apply border border-white/40 bg-white/70 shadow-[0_18px_64px_-32px_rgba(15,23,42,0.25)] backdrop-blur-xl;
   }
+
+  /* Restrained hover for content cards — a small lift reads as "interactive"
+     without turning the page into a bounce house. */
+  .lift {
+    @apply transition-[transform,box-shadow] duration-300 ease-out;
+  }
+  .lift:hover {
+    @apply -translate-y-1 shadow-[0_26px_70px_-30px_rgba(15,23,42,0.42)];
+  }
+
+  /* Hairline grid behind the hero: quiet "structured data" texture that suits a
+     product whose whole claim is about how rows are stored. */
+  .grid-veil {
+    background-image:
+      linear-gradient(to right, rgb(15 23 42 / 0.05) 1px, transparent 1px),
+      linear-gradient(to bottom, rgb(15 23 42 / 0.05) 1px, transparent 1px);
+    background-size: 56px 56px;
+    mask-image: radial-gradient(ellipse 80% 60% at 50% 0%, #000 30%, transparent 75%);
+  }
+  .dark .grid-veil {
+    background-image:
+      linear-gradient(to right, rgb(255 255 255 / 0.06) 1px, transparent 1px),
+      linear-gradient(to bottom, rgb(255 255 255 / 0.06) 1px, transparent 1px);
+  }
 }
 
 @theme inline {
   --animate-float: float 10s ease-in-out infinite;
   --animate-float-slow: float 14s ease-in-out infinite;
   --animate-fade-up: fade-up 420ms ease-out both;
+  /* Hero signature: a card arriving, then its identity being severed. */
+  --animate-land: land 520ms cubic-bezier(0.2, 0.8, 0.2, 1) both;
+  --animate-sever: sever 460ms ease-in both;
+  --animate-pulse-ring: pulse-ring 2.4s ease-out infinite;
+}
+
+/* The named card drops in from above, as if just submitted. */
+@keyframes land {
+  from {
+    opacity: 0;
+    transform: translateY(-18px) scale(0.97);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+/* The author's identity collapsing: squeezed thin, blurred out, gone. */
+@keyframes sever {
+  0% {
+    opacity: 1;
+    filter: blur(0);
+  }
+  60% {
+    opacity: 0.45;
+    filter: blur(2px);
+    transform: scaleX(0.94);
+  }
+  100% {
+    opacity: 0;
+    filter: blur(6px);
+    transform: scaleX(0.8);
+  }
+}
+
+@keyframes pulse-ring {
+  0% {
+    box-shadow: 0 0 0 0 rgb(56 189 248 / 0.45);
+  }
+  70% {
+    box-shadow: 0 0 0 14px rgb(56 189 248 / 0);
+  }
+  100% {
+    box-shadow: 0 0 0 0 rgb(56 189 248 / 0);
+  }
 }
 
 @keyframes float {

@@ -2,16 +2,17 @@
 
 import { createClient } from '@/lib/supabase/server'
 import { createAdminClient } from '@/lib/supabase/admin'
-import { createRoundSchema, type CreateRoundInput } from '@/lib/validations/round'
+import { openRoundInputSchema, type OpenRoundInput } from '@/lib/validations/round'
 import { buildQuestionRows } from '@/lib/rounds/question-rows'
+import { OPEN_ROUND_DURATION_MS } from '@/lib/rounds/constants'
 
 type CreateOpenRoundResult = { error: string } | { data: { id: string } }
 
 export async function createOpenRound(
   displayName: string,
-  input: CreateRoundInput
+  input: OpenRoundInput
 ): Promise<CreateOpenRoundResult> {
-  const parsed = createRoundSchema.safeParse(input)
+  const parsed = openRoundInputSchema.safeParse(input)
   if (!parsed.success) {
     return { error: parsed.error.issues[0].message }
   }
@@ -34,11 +35,14 @@ export async function createOpenRound(
   const admin = createAdminClient()
   const roundId = crypto.randomUUID()
 
+  // Fixed server-side so a guest can't extend an "ephemeral" round.
+  const deadline = new Date(Date.now() + OPEN_ROUND_DURATION_MS).toISOString()
+
   const { error: roundError } = await admin.from('rounds').insert({
     id: roundId,
     team_id: null,
     title: parsed.data.title,
-    deadline: new Date(parsed.data.deadline).toISOString(),
+    deadline,
     created_by: user.id,
     status: 'collecting',
   })
